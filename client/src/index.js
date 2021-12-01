@@ -4,13 +4,16 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
+import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render(
-  <StrictMode>
-    <ColorModeScript />
-    <App />
-  </StrictMode>,
-  document.getElementById('root')
+   <StrictMode>
+      <BrowserRouter>
+         <ColorModeScript />
+         <App />
+      </BrowserRouter>
+   </StrictMode>,
+   document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change

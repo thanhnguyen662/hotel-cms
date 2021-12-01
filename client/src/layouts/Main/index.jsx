@@ -6,10 +6,11 @@ import {
    useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import HeaderBar from '../../components/HeaderBar';
 import SiderBar from '../../components/SiderBar';
 
-function Main({ children }) {
+function Main() {
    const { isOpen, onOpen, onClose } = useDisclosure();
 
    return (
@@ -33,8 +34,8 @@ function Main({ children }) {
                </DrawerContent>
             </Drawer>
             <HeaderBar onOpen={onOpen} />
-            <Box ml={{ base: 0, md: 60 }} p='4'>
-               {children}
+            <Box ml={{ base: 0, md: 60 }} px='10' py='10'>
+               <Outlet />
             </Box>
          </Box>
       </div>
