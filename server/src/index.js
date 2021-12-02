@@ -2,7 +2,9 @@ const express = require('express');
 const app = express();
 const route = require('./routes');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
+const passport = require('passport');
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
 
 app.use(
    cors({
@@ -16,6 +18,20 @@ app.use(
       extended: true,
    })
 );
+
+app.use(
+   session({
+      store: new pgSession({
+         tableName: 'Sessions',
+      }),
+      secret: 'secretcode',
+      resave: false,
+      saveUninitialized: true,
+   })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.json());
 

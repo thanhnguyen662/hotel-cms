@@ -11,7 +11,17 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  username String
-  name     String?
+  id           Int     @id @default(autoincrement())
+  username     String  @unique
+  hashPassword String
+  firstName    String?
+  lastName     String?
+}
+
+model Sessions {
+  sid       String    @id
+  expire    DateTime
+  sess      Json
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }

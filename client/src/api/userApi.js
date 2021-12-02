@@ -1,10 +1,25 @@
 import axiosClient from './axiosClient';
 
 const userApi = {
-  getAllPins: () => {
-    const url = '/user/get/all';
-    return axiosClient.get(url);
-  },
+   register: (data) => {
+      const url = '/users/register';
+      return axiosClient.post(url, data);
+   },
+
+   login: (data) => {
+      const url = '/users/login';
+      return axiosClient.post(url, data);
+   },
+
+   logout: () => {
+      const url = '/users/logout';
+      return axiosClient.post(url);
+   },
+
+   my: () => {
+      const url = '/users/my';
+      return axiosClient.get(url);
+   },
 };
 
 export default userApi;
