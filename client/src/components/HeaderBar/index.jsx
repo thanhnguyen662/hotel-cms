@@ -4,12 +4,11 @@ import {
    Box,
    Button,
    Flex,
-   Heading,
    HStack,
    IconButton,
    Input,
    InputGroup,
-   InputLeftElement,
+   InputRightElement,
    Menu,
    MenuButton,
    MenuDivider,
@@ -17,8 +16,9 @@ import {
    MenuList,
    Spacer,
    Stack,
-   Text,
    useColorModeValue,
+   VStack,
+   Text,
 } from '@chakra-ui/react';
 import React from 'react';
 import { FiChevronDown, FiMenu } from 'react-icons/fi';
@@ -27,18 +27,26 @@ import { useNavigate } from 'react-router';
 import userApi from '../../api/userApi';
 
 function HeaderBar({ onOpen, ...rest }) {
-   const currentUserId = useSelector((state) => state.user.loginStatus);
-   const lastName = useSelector((state) => state.user.lastName);
-   const firstName = useSelector((state) => state.user.firstName);
    const navigate = useNavigate();
+   const loginStatus = useSelector((state) => state.user.loginStatus);
+   const currentUserId = useSelector((state) => state.user.id);
+   const username = useSelector((state) => state.user.username);
+   const role = useSelector((state) => state.user.role);
+   const firstName = useSelector((state) => state.user.firstName);
+   const lastName = useSelector((state) => state.user.lastName);
 
    const onLogoutClick = async () => {
       try {
          const response = await userApi.logout();
-         console.log(response);
+         if (response.message === 'logout_success')
+            return (window.location = '/');
       } catch (error) {
          console.log(error);
       }
+   };
+
+   const onProfileClick = () => {
+      return navigate(`/profile/${currentUserId}`);
    };
 
    const isLoginHeader = () => {
@@ -49,7 +57,7 @@ function HeaderBar({ onOpen, ...rest }) {
                px={{ base: 4, md: 4 }}
                height='20'
                alignItems='center'
-               borderBottomWidth='1px'
+               // borderBottomWidth='1px'
                justifyContent={{ base: 'space-between', md: 'flex-end' }}
                {...rest}
             >
@@ -61,19 +69,7 @@ function HeaderBar({ onOpen, ...rest }) {
                   icon={<FiMenu />}
                />
 
-               <InputGroup mr='6'>
-                  <InputLeftElement
-                     pointerEvents='none'
-                     children={<SearchIcon color='gray.300' />}
-                  />
-                  <Input
-                     type='text'
-                     placeholder='Search here...'
-                     fontSize='0.8em'
-                  />
-               </InputGroup>
-
-               <Box>
+               <Box ml='4'>
                   <HStack spacing={{ base: '0', md: '6' }}>
                      <Flex alignItems={'center'}>
                         <Menu>
@@ -83,14 +79,27 @@ function HeaderBar({ onOpen, ...rest }) {
                               _focus={{ boxShadow: 'none' }}
                            >
                               <HStack>
-                                 <Avatar size={'sm'} />
+                                 <VStack
+                                    display={{ base: 'none', md: 'flex' }}
+                                    alignItems='flex-start'
+                                    spacing='1px'
+                                    mr='3'
+                                 >
+                                    <Text fontSize='sm'>{`${firstName} ${lastName}`}</Text>
+                                    <Text fontSize='xs' color='gray.600'>
+                                       {role}
+                                    </Text>
+                                 </VStack>
+                                 <Avatar size={'md'} name={username} />
                                  <Box display={{ base: 'none', md: 'flex' }}>
                                     <FiChevronDown />
                                  </Box>
                               </HStack>
                            </MenuButton>
                            <MenuList>
-                              <MenuItem>Profile</MenuItem>
+                              <MenuItem onClick={onProfileClick}>
+                                 Profile
+                              </MenuItem>
                               <MenuItem>Settings</MenuItem>
                               <MenuItem>Billing</MenuItem>
                               <MenuDivider />
@@ -150,22 +159,29 @@ function HeaderBar({ onOpen, ...rest }) {
          height='20'
          alignItems='center'
          bg={useColorModeValue('white', 'gray.900')}
-         borderBottomWidth='1px'
+         // borderBottomWidth='1px'
          borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
          justifyContent={{ base: 'space-between', md: 'flex-end' }}
          {...rest}
       >
          <Box p='5'>
-            <HStack>
-               <Heading fontSize='xl'>
-                  Hi, {firstName} {lastName}{' '}
-               </Heading>
-               <Text>✌</Text>
-            </HStack>
+            <InputGroup display={{ base: 'none', md: 'flex' }}>
+               <InputRightElement
+                  pointerEvents='none'
+                  children={<SearchIcon color='gray.400' />}
+               />
+               <Input
+                  type='text'
+                  placeholder='Search here...'
+                  fontSize='0.8em'
+                  bg='gray.100'
+                  width='20vw'
+               />
+            </InputGroup>
          </Box>
          <Spacer />
          <Box>
-            {currentUserId ? <>{isLoginHeader()}</> : <>{isNotLoginHeader()}</>}
+            {loginStatus ? <>{isLoginHeader()}</> : <>{isNotLoginHeader()}</>}
          </Box>
       </Flex>
    );

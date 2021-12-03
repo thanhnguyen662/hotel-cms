@@ -46,12 +46,12 @@ function RegisterForm(props) {
 
    const validationSchema = Yup.object().shape({
       username: Yup.string()
-         .min(6, 'Must be more than 6 characters')
+         // .min(6, 'Must be more than 6 characters')
          .required('Username is required!'),
       firstName: Yup.string().required('First Name is required!'),
       lastName: Yup.string().required('Last Name is required!'),
       password: Yup.string()
-         .min(6, 'Must be more than 6 characters')
+         // .min(6, 'Must be more than 6 characters')
          .required('Password is required!'),
       confirmPassword: Yup.string().oneOf(
          [Yup.ref('password'), null],

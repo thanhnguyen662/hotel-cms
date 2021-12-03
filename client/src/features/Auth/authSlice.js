@@ -3,6 +3,8 @@ import userApi from '../../api/userApi';
 
 export const getUserProfile = createAsyncThunk('user/profile', async () => {
    const response = await userApi.my();
+   console.log('current user: ', response);
+
    return response;
 });
 
@@ -14,17 +16,17 @@ const authUser = createSlice({
       firstName: '',
       lastName: '',
       loginStatus: false,
+      role: '',
    },
    reducers: {},
    extraReducers: {
       [getUserProfile.fulfilled]: (state, action) => {
-         const { id, username, firstName, lastName, loginStatus } =
-            action.payload;
-         state.id = id;
-         state.username = username;
-         state.firstName = firstName;
-         state.lastName = lastName;
-         state.loginStatus = loginStatus;
+         state.id = action.payload.id;
+         state.username = action.payload.username;
+         state.firstName = action.payload.profile?.firstName;
+         state.lastName = action.payload.profile?.lastName;
+         state.loginStatus = action.payload.loginStatus;
+         state.role = action.payload.role?.name;
       },
    },
 });

@@ -17,8 +17,18 @@ const userApi = {
    },
 
    my: () => {
-      const url = '/users/my';
+      const url = '/users/profile/my';
       return axiosClient.get(url);
+   },
+
+   userProfile: (params) => {
+      const url = '/users/profile/user';
+      return axiosClient.get(url, { params });
+   },
+
+   manageAllUser: (params) => {
+      const url = '/users/manage/all';
+      return axiosClient.get(url, { params });
    },
 };
 

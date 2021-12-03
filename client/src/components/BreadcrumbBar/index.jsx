@@ -5,7 +5,16 @@ import { Link } from 'react-router-dom';
 import useReactRouterBreadcrumbs from 'use-react-router-breadcrumbs';
 
 function BreadcrumbBar(props) {
-   const breadcrumbs = useReactRouterBreadcrumbs();
+   const { username } = props;
+
+   const DynamicProductBreadcrumb = () => <span>{username}</span>;
+
+   const routes = [
+      { path: '/profile/:userId', breadcrumb: DynamicProductBreadcrumb },
+   ];
+
+   const breadcrumbs = useReactRouterBreadcrumbs(routes);
+
    return (
       <>
          <Breadcrumb
@@ -14,6 +23,7 @@ function BreadcrumbBar(props) {
             fontWeight='bold'
             fontSize='sm'
             color='gray.500'
+            mb='5'
          >
             {breadcrumbs.map(({ breadcrumb, match }) => (
                <BreadcrumbItem key={match.pathname}>

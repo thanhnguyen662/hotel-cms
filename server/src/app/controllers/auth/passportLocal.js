@@ -16,6 +16,7 @@ const initPassportLocal = () => {
             try {
                const user = await prisma.user.findUnique({
                   where: { username: username },
+                  include: { profile: true, role: true },
                });
 
                if (!user) return done(null, false);

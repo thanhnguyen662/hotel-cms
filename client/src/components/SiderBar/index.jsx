@@ -15,18 +15,24 @@ import {
    FiStar,
    FiTrendingUp,
 } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 
 const LinkItems = [
-   { name: 'Home', icon: FiHome },
-   { name: 'Trending', icon: FiTrendingUp },
-   { name: 'Explore', icon: FiCompass },
-   { name: 'Favourites', icon: FiStar },
-   { name: 'Settings', icon: FiSettings },
+   { name: 'Home', icon: FiHome, navigateTo: '/' },
+   { name: 'Manage User', icon: FiTrendingUp, navigateTo: '/manages/user' },
+   { name: 'Explore', icon: FiCompass, navigateTo: '/' },
+   { name: 'Favourites', icon: FiStar, navigateTo: '/' },
+   { name: 'Settings', icon: FiSettings, navigateTo: '/' },
 ];
 
-const NavItem = ({ icon, children, ...rest }) => {
+const NavItem = ({ icon, children, navigateTo, ...rest }) => {
+   const navigate = useNavigate();
+   const onClickSidebarTab = () => {
+      navigate(navigateTo);
+   };
+
    return (
-      <Link href='#' style={{ textDecoration: 'none' }}>
+      <Link onClick={onClickSidebarTab} style={{ textDecoration: 'none' }}>
          <Flex
             align='center'
             p='4'
@@ -60,7 +66,7 @@ function SiderBar({ onClose, ...rest }) {
    return (
       <Box
          transition='3s ease'
-         bg={useColorModeValue('white', 'gray.900')}
+         bg={useColorModeValue('gray.200', 'gray.900')}
          borderRight='1px'
          borderRightColor={useColorModeValue('gray.200', 'gray.700')}
          w={{ base: 'full', md: 60 }}
@@ -78,7 +84,11 @@ function SiderBar({ onClose, ...rest }) {
             />
          </Flex>
          {LinkItems.map((link) => (
-            <NavItem key={link.name} icon={link.icon}>
+            <NavItem
+               key={link.name}
+               icon={link.icon}
+               navigateTo={link.navigateTo}
+            >
                {link.name}
             </NavItem>
          ))}

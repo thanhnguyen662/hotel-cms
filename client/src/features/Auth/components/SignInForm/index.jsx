@@ -1,33 +1,36 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import {
-   Flex,
+   Alert,
+   AlertIcon,
    Box,
-   FormControl,
-   FormLabel,
-   Input,
-   Checkbox,
-   Stack,
-   Link,
    Button,
+   Flex,
+   FormControl,
+   FormErrorMessage,
+   FormLabel,
    Heading,
+   Input,
+   Link,
+   Stack,
    Text,
    useColorModeValue,
-   FormErrorMessage,
 } from '@chakra-ui/react';
 import { Formik } from 'formik';
+import PropTypes from 'prop-types';
+import React from 'react';
 import * as Yup from 'yup';
 
 SignInForm.propTypes = {
    onSignInFormSubmit: PropTypes.func,
+   isAlert: PropTypes.bool,
 };
 
 SignInForm.defaultProps = {
    onSignInFormSubmit: null,
+   isAlert: false,
 };
 
 function SignInForm(props) {
-   const { onSignInFormSubmit } = props;
+   const { onSignInFormSubmit, isAlert } = props;
 
    const initialValues = {
       username: '',
@@ -62,6 +65,13 @@ function SignInForm(props) {
                   p={8}
                >
                   <Stack spacing={4}>
+                     {isAlert && (
+                        <Alert status='error' borderRadius='5'>
+                           <AlertIcon />
+                           Incorrect username or password.
+                        </Alert>
+                     )}
+
                      <Formik
                         initialValues={initialValues}
                         onSubmit={onSignInFormSubmit}
@@ -69,7 +79,6 @@ function SignInForm(props) {
                      >
                         {({
                            handleChange,
-                           handleBlur,
                            handleSubmit,
                            values,
                            errors,
@@ -103,28 +112,17 @@ function SignInForm(props) {
                                     {errors.password}
                                  </FormErrorMessage>
                               </FormControl>
-                              <Stack spacing={10}>
-                                 <Stack
-                                    direction={{ base: 'column', sm: 'row' }}
-                                    align={'start'}
-                                    justify={'space-between'}
-                                 >
-                                    <Checkbox>Remember me</Checkbox>
-                                    <Link color={'blue.400'}>
-                                       Forgot password?
-                                    </Link>
-                                 </Stack>
-                                 <Button
-                                    bg={'blue.400'}
-                                    color={'white'}
-                                    _hover={{
-                                       bg: 'blue.500',
-                                    }}
-                                    onClick={handleSubmit}
-                                 >
-                                    Sign in
-                                 </Button>
-                              </Stack>
+                              <Button
+                                 bg={'blue.400'}
+                                 color={'white'}
+                                 _hover={{
+                                    bg: 'blue.500',
+                                 }}
+                                 type='submit'
+                                 onClick={handleSubmit}
+                              >
+                                 Sign in
+                              </Button>
                            </>
                         )}
                      </Formik>

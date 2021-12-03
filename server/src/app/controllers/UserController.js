@@ -21,9 +21,14 @@ class UserController {
          const createNewUser = await prisma.user.create({
             data: {
                username: username,
-               firstName: firstName,
-               lastName: lastName,
                hashPassword: await bcrypt.hash(password, 10),
+               roleId: 2,
+               profile: {
+                  create: {
+                     firstName: firstName,
+                     lastName: lastName,
+                  },
+               },
             },
          });
          delete createNewUser.hashPassword;
@@ -35,27 +40,18 @@ class UserController {
    };
 
    login = async (req, res, next) => {
-      passport.authenticate('local', (err, user, info) => {
+      passport.authenticate('local', (err, user) => {
          if (err) throw err;
-         if (!user) res.send('No User Exists');
+         if (!user) res.json({ message: 'user_not_exist' });
          req.logIn(user, function (err) {
-            if (err) {
-               return next(err);
-            }
+            if (err) return next(err);
             return res.json(req.user);
          });
       })(req, res, next);
    };
 
-   getProfile = async (req, res, next) => {
+   getMyProfile = async (req, res, next) => {
       try {
-         const response = await prisma.user.findUnique({
-            where: {
-               id: Number(req.user.id),
-            },
-         });
-         delete response.hashPassword;
-
          return res.status(200).json({
             ...req.user,
             loginStatus: req.isAuthenticated(),
@@ -65,13 +61,60 @@ class UserController {
       }
    };
 
+   getUserProfile = async (req, res, next) => {
+      try {
+         const response = await prisma.user.findUnique({
+            where: {
+               id: Number(req.query.userId),
+            },
+            include: {
+               profile: true,
+               role: true,
+            },
+         });
+         delete response.hashPassword;
+         return res.status(200).json(response);
+      } catch (error) {
+         return next(error);
+      }
+   };
+
    logout = async (req, res, next) => {
       try {
-         const response = await prisma.sessions.delete({
-            where: { sid: req.sessionID },
-         });
          req.logout();
-         res.json({ response });
+         res.json({ message: 'logout_success' });
+      } catch (error) {
+         return next(error);
+      }
+   };
+
+   manageAllUser = async (req, res, next) => {
+      const username = req.query.username || undefined;
+      const role = req.query.role === 'all' ? undefined : req.query.role;
+      try {
+         const response = await prisma.user.findMany({
+            where: {
+               AND: [
+                  {
+                     username: {
+                        contains: username,
+                        mode: 'insensitive',
+                     },
+                  },
+                  {
+                     role: {
+                        name: role,
+                     },
+                  },
+               ],
+            },
+            include: {
+               profile: true,
+               role: true,
+            },
+         });
+
+         return res.status(200).json(response);
       } catch (error) {
          return next(error);
       }

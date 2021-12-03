@@ -34,7 +34,13 @@ function Main() {
                </DrawerContent>
             </Drawer>
             <HeaderBar onOpen={onOpen} />
-            <Box ml={{ base: 0, md: 60 }} px='10' py='10'>
+            <Box
+               ml={{ base: 0, md: 60 }}
+               px='10'
+               py='4'
+               bg='white'
+               height='89vh'
+            >
                <Outlet />
             </Box>
          </Box>

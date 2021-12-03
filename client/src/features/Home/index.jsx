@@ -1,10 +1,9 @@
 import React from 'react';
-import BreadcrumbBar from '../../components/BreadcrumbBar';
 
 function Home(props) {
    return (
       <div>
-         <BreadcrumbBar />
+         <h1>Home Page</h1>
       </div>
    );
 }
