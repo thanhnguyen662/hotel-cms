@@ -9,8 +9,7 @@ function UserRelatedInfo(props) {
       <Tabs
          bg='white'
          rounded={'lg'}
-         // boxShadow={'xl'}
-         borderWidth='2px'
+         boxShadow={'xl'}
          h='100%'
          colorScheme='blue'
       >

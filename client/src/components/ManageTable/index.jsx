@@ -24,7 +24,7 @@ function ManageTable(props) {
 
    return (
       <>
-         <Table {...getTableProps()} variant='simple' borderWidth='1px'>
+         <Table {...getTableProps()} variant='simple'>
             <Thead>
                {headerGroups.map((headerGroup) => (
                   <Tr {...headerGroup.getHeaderGroupProps()}>

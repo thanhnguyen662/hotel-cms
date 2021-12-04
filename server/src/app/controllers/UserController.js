@@ -119,6 +119,56 @@ class UserController {
          return next(error);
       }
    };
+
+   editUserProfile = async (req, res, next) => {
+      const { id, firstName, lastName, role } = req.body;
+      try {
+         const isRole = await prisma.role.findMany();
+         const roleId = isRole.find((i) => i.name === String(role)).id;
+         const response = await prisma.user.update({
+            where: {
+               id: Number(id),
+            },
+            data: {
+               roleId: Number(roleId),
+               profile: {
+                  update: {
+                     firstName: firstName,
+                     lastName: lastName,
+                  },
+               },
+            },
+            include: {
+               profile: true,
+               role: true,
+            },
+         });
+
+         return res.status(200).json(response);
+      } catch (error) {
+         return next(error);
+      }
+   };
+
+   resetPassword = async (req, res, next) => {
+      const { userId } = req.body;
+      const defaultPassword = 'Abc@123';
+      const newHasPassword = await bcrypt.hash(defaultPassword, 10);
+
+      const response = await prisma.user.update({
+         where: {
+            id: Number(userId),
+         },
+         data: {
+            hashPassword: newHasPassword,
+         },
+      });
+
+      if (response)
+         return res
+            .status(200)
+            .json({ ...response, message: 'reset_password_success' });
+   };
 }
 
 module.exports = new UserController();

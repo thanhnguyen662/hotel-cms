@@ -16,6 +16,16 @@ const userApi = {
       return axiosClient.post(url);
    },
 
+   resetPassword: (data) => {
+      const url = '/users/reset';
+      return axiosClient.patch(url, data);
+   },
+
+   editProfile: (data) => {
+      const url = '/users/profile/edit';
+      return axiosClient.patch(url, data);
+   },
+
    my: () => {
       const url = '/users/profile/my';
       return axiosClient.get(url);

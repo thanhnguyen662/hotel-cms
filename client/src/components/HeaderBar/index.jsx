@@ -158,7 +158,7 @@ function HeaderBar({ onOpen, ...rest }) {
          px={{ base: 4, md: 4 }}
          height='20'
          alignItems='center'
-         bg={useColorModeValue('white', 'gray.900')}
+         bg={useColorModeValue('gray.100', 'gray.900')}
          // borderBottomWidth='1px'
          borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
          justifyContent={{ base: 'space-between', md: 'flex-end' }}
@@ -174,8 +174,11 @@ function HeaderBar({ onOpen, ...rest }) {
                   type='text'
                   placeholder='Search here...'
                   fontSize='0.8em'
-                  bg='gray.100'
+                  bg='white'
                   width='20vw'
+                  borderWidth='0'
+                  boxShadow='md'
+                  rounded={'lg'}
                />
             </InputGroup>
          </Box>

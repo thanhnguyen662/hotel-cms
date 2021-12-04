@@ -29,8 +29,7 @@ function UserInfo(props) {
          // maxW={'350px'}
          w={'100%'}
          bg={useColorModeValue('white', 'gray.900')}
-         // boxShadow={'xl'}
-         borderWidth='2px'
+         boxShadow={'xl'}
          rounded={'lg'}
          p={6}
          textAlign={'center'}

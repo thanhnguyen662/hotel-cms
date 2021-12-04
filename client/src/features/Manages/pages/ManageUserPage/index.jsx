@@ -1,22 +1,40 @@
-import { Avatar } from '@chakra-ui/avatar';
-import { Button } from '@chakra-ui/button';
-import { SearchIcon } from '@chakra-ui/icons';
-import { Input, InputGroup, InputLeftElement } from '@chakra-ui/input';
-import { Box, Heading, HStack, VStack } from '@chakra-ui/layout';
-import { Select } from '@chakra-ui/select';
+import { ChevronDownIcon, SearchIcon } from '@chakra-ui/icons';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import userApi from '../../../../api/userApi';
 import ManageTable from '../../../../components/ManageTable';
+import {
+   Avatar,
+   Button,
+   Input,
+   InputGroup,
+   InputLeftElement,
+   Box,
+   Heading,
+   HStack,
+   VStack,
+   Select,
+   useDisclosure,
+   Text,
+   Menu,
+   MenuButton,
+   MenuList,
+   MenuItem,
+   useToast,
+} from '@chakra-ui/react';
+import EditProfileModal from '../../components/EditProfileModel';
 
 function ManageUserPage(props) {
+   const toast = useToast();
    const timeout = useRef(null);
+   const { onOpen, isOpen, onClose } = useDisclosure();
+   const currentUserRole = useSelector((state) => state.user.role);
+   const [rowValues, setRowValues] = useState({});
    const [allUser, setAllUser] = useState([]);
    const [searchKeyword, setSearchKeyword] = useState({
       username: undefined,
       role: 'all',
    });
-   const currentUserRole = useSelector((state) => state.user.role);
 
    useEffect(() => {
       const getAllUserAccount = async () => {
@@ -25,13 +43,6 @@ function ManageUserPage(props) {
       };
       getAllUserAccount();
    }, [searchKeyword]);
-
-   const handleOnSearchChange = (value, searchType) => {
-      if (timeout.current) clearTimeout(timeout.current);
-      timeout.current = setTimeout(() => {
-         setSearchKeyword({ ...searchKeyword, [searchType]: value });
-      }, 400);
-   };
 
    const data = useMemo(() => [...allUser], [allUser]);
    const columns = useMemo(
@@ -63,24 +74,101 @@ function ManageUserPage(props) {
 
    if (currentUserRole === 'admin') {
       columns.push({
-         Header: 'Edit',
+         Header: 'Actions',
          accessor: 'id',
          Cell: (record) => (
-            <Button onClick={() => console.log(record.value)}>edit</Button>
+            <>
+               <Menu>
+                  <MenuButton
+                     as={Button}
+                     rightIcon={<ChevronDownIcon />}
+                     colorScheme='blue'
+                  >
+                     Actions
+                  </MenuButton>
+                  <MenuList>
+                     <MenuItem onClick={() => onClickEdit(record)}>
+                        Edit
+                     </MenuItem>
+                     <MenuItem>Delete</MenuItem>
+                  </MenuList>
+               </Menu>
+            </>
          ),
       });
    }
 
+   const handleOnSearchChange = (value, key) => {
+      if (timeout.current) clearTimeout(timeout.current);
+      timeout.current = setTimeout(() => {
+         setSearchKeyword({ ...searchKeyword, [key]: value });
+      }, 400);
+   };
+
+   const onClickEdit = (record) => {
+      setRowValues(record.row.values);
+      onOpen();
+   };
+
+   const handleEditUser = async (formData) => {
+      try {
+         const response = await userApi.editProfile(formData);
+         setAllUser((prev) => {
+            const findIndex = prev.findIndex((i) => i.id === response.id);
+            prev[findIndex] = { ...response };
+            return [...prev];
+         });
+         showToastNotification(
+            'Successful',
+            `Edit ${response.username} Success`,
+            'success',
+         );
+         onClose();
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
+   const handleResetPassword = async (userId) => {
+      try {
+         const response = await userApi.resetPassword({ userId });
+         if (response.message === 'reset_password_success') {
+            showToastNotification(
+               'Successful',
+               `Reset Password of ${response.username} success`,
+               'success',
+            );
+            onClose();
+         }
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
+   const showToastNotification = (title, description, status) => {
+      toast({
+         title: title,
+         description: description,
+         status: status,
+         duration: 9000,
+         isClosable: true,
+      });
+   };
+
    return (
-      <Box>
-         <Heading fontSize='25' mb='6'>
+      <Box bg='white' boxShadow='xl' rounded='xl' p='5'>
+         <Heading fontSize='25' mb='2'>
             Manage User
          </Heading>
+         <Text mb='6'>
+            Ad ullamco magna eu proident dolor commodo sunt veniam.
+         </Text>
          <VStack spacing='5'>
             <HStack spacing='5' width='full'>
                <Select
                   placeholder='Select option'
                   flex='1'
+                  defaultValue='all'
                   onChange={(e) => handleOnSearchChange(e.target.value, 'role')}
                >
                   <option value='all'>All</option>
@@ -102,6 +190,14 @@ function ManageUserPage(props) {
             </HStack>
             <ManageTable data={data} columns={columns} />
          </VStack>
+
+         <EditProfileModal
+            isOpen={isOpen}
+            onClose={onClose}
+            rowValues={rowValues}
+            onSubmit={handleEditUser}
+            onResetPassword={handleResetPassword}
+         />
       </Box>
    );
 }

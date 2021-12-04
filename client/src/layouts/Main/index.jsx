@@ -38,7 +38,7 @@ function Main() {
                ml={{ base: 0, md: 60 }}
                px='10'
                py='4'
-               bg='white'
+               // bg='white'
                height='89vh'
             >
                <Outlet />
