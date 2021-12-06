@@ -14,8 +14,10 @@ const initPassportLocal = () => {
          },
          async (req, username, password, done) => {
             try {
-               const user = await prisma.user.findUnique({
-                  where: { username: username },
+               const user = await prisma.user.findFirst({
+                  where: {
+                     AND: [{ username: username }, { isDelete: false }],
+                  },
                   include: { profile: true, role: true },
                });
 

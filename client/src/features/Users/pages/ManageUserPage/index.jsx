@@ -23,12 +23,14 @@ import {
    useToast,
 } from '@chakra-ui/react';
 import EditProfileModal from '../../components/EditProfileModel';
+import AlertDialogBox from '../../../../components/AlertDialogBox';
 
 function ManageUserPage(props) {
+   const { onOpen, isOpen, onClose } = useDisclosure();
    const toast = useToast();
    const timeout = useRef(null);
-   const { onOpen, isOpen, onClose } = useDisclosure();
    const currentUserRole = useSelector((state) => state.user.role);
+   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
    const [rowValues, setRowValues] = useState({});
    const [allUser, setAllUser] = useState([]);
    const [searchKeyword, setSearchKeyword] = useState({
@@ -83,6 +85,7 @@ function ManageUserPage(props) {
                      as={Button}
                      rightIcon={<ChevronDownIcon />}
                      colorScheme='blue'
+                     onClick={() => setRowValues(record.row.values)}
                   >
                      Actions
                   </MenuButton>
@@ -90,7 +93,9 @@ function ManageUserPage(props) {
                      <MenuItem onClick={() => onClickEdit(record)}>
                         Edit
                      </MenuItem>
-                     <MenuItem>Delete</MenuItem>
+                     <MenuItem onClick={() => setIsDeleteAlertOpen(true)}>
+                        Delete
+                     </MenuItem>
                   </MenuList>
                </Menu>
             </>
@@ -105,25 +110,26 @@ function ManageUserPage(props) {
       }, 400);
    };
 
-   const onClickEdit = (record) => {
-      setRowValues(record.row.values);
+   const onClickEdit = () => {
       onOpen();
    };
 
    const handleEditUser = async (formData) => {
       try {
          const response = await userApi.editProfile(formData);
-         setAllUser((prev) => {
-            const findIndex = prev.findIndex((i) => i.id === response.id);
-            prev[findIndex] = { ...response };
-            return [...prev];
-         });
-         showToastNotification(
-            'Successful',
-            `Edit ${response.username} Success`,
-            'success',
-         );
-         onClose();
+         if (response.message === 'edit_account_success') {
+            setAllUser((prev) => {
+               const findIndex = prev.findIndex((i) => i.id === response.id);
+               prev[findIndex] = { ...response };
+               return [...prev];
+            });
+            showToastNotification(
+               'Successful',
+               `Edit ${response.username} Success`,
+               'success',
+            );
+            onClose();
+         }
       } catch (error) {
          console.log(error);
       }
@@ -139,6 +145,24 @@ function ManageUserPage(props) {
                'success',
             );
             onClose();
+         }
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
+   const handleOnDelete = async () => {
+      try {
+         const response = await userApi.delete({
+            userId: rowValues.id,
+         });
+         if (response.message === 'delete_account_success') {
+            setAllUser(allUser.filter((i) => i.id !== Number(response.id)));
+            showToastNotification(
+               'Successful',
+               `Delete account of ${response.username} success`,
+               'success',
+            );
          }
       } catch (error) {
          console.log(error);
@@ -197,6 +221,11 @@ function ManageUserPage(props) {
             rowValues={rowValues}
             onSubmit={handleEditUser}
             onResetPassword={handleResetPassword}
+         />
+         <AlertDialogBox
+            isDeleteAlertOpen={isDeleteAlertOpen}
+            setIsDeleteAlertOpen={setIsDeleteAlertOpen}
+            handleOnDelete={handleOnDelete}
          />
       </Box>
    );

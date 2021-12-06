@@ -50,6 +50,34 @@ class UserController {
       })(req, res, next);
    };
 
+   logout = async (req, res, next) => {
+      try {
+         req.logout();
+         res.json({ message: 'logout_success' });
+      } catch (error) {
+         return next(error);
+      }
+   };
+
+   delete = async (req, res, next) => {
+      try {
+         const response = await prisma.user.update({
+            where: {
+               id: Number(req.body.userId),
+            },
+            data: {
+               isDelete: true,
+            },
+         });
+
+         return res
+            .status(200)
+            .json({ ...response, message: 'delete_account_success' });
+      } catch (error) {
+         return next(error);
+      }
+   };
+
    getMyProfile = async (req, res, next) => {
       try {
          return res.status(200).json({
@@ -79,15 +107,6 @@ class UserController {
       }
    };
 
-   logout = async (req, res, next) => {
-      try {
-         req.logout();
-         res.json({ message: 'logout_success' });
-      } catch (error) {
-         return next(error);
-      }
-   };
-
    manageAllUser = async (req, res, next) => {
       const username = req.query.username || undefined;
       const role = req.query.role === 'all' ? undefined : req.query.role;
@@ -105,6 +124,9 @@ class UserController {
                      role: {
                         name: role,
                      },
+                  },
+                  {
+                     isDelete: false,
                   },
                ],
             },
@@ -144,30 +166,36 @@ class UserController {
             },
          });
 
-         return res.status(200).json(response);
+         return res
+            .status(200)
+            .json({ ...response, message: 'edit_account_success' });
       } catch (error) {
          return next(error);
       }
    };
 
    resetPassword = async (req, res, next) => {
-      const { userId } = req.body;
-      const defaultPassword = 'Abc@123';
-      const newHasPassword = await bcrypt.hash(defaultPassword, 10);
+      try {
+         const { userId } = req.body;
+         const defaultPassword = 'Abc@123';
+         const newHasPassword = await bcrypt.hash(defaultPassword, 10);
 
-      const response = await prisma.user.update({
-         where: {
-            id: Number(userId),
-         },
-         data: {
-            hashPassword: newHasPassword,
-         },
-      });
+         const response = await prisma.user.update({
+            where: {
+               id: Number(userId),
+            },
+            data: {
+               hashPassword: newHasPassword,
+            },
+         });
 
-      if (response)
-         return res
-            .status(200)
-            .json({ ...response, message: 'reset_password_success' });
+         if (response)
+            return res
+               .status(200)
+               .json({ ...response, message: 'reset_password_success' });
+      } catch (error) {
+         return next(error);
+      }
    };
 }
 

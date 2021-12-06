@@ -15,6 +15,7 @@ model User {
   username     String   @unique
   hashPassword String
   roleId       Int?
+  isDelete     Boolean? @default(false)
   role         Role?    @relation(fields: [roleId], references: [id])
   profile      Profile?
 }

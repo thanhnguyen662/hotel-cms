@@ -15,7 +15,7 @@ function Main() {
 
    return (
       <div>
-         <Box minH='100vh' bg={useColorModeValue('gray.100', 'gray.900')}>
+         <Box height='auto' bg={useColorModeValue('gray.100', 'gray.900')}>
             <SiderBar
                onClose={() => onClose}
                display={{ base: 'none', md: 'block' }}
@@ -38,8 +38,9 @@ function Main() {
                ml={{ base: 0, md: 60 }}
                px='10'
                py='4'
-               // bg='white'
-               height='89vh'
+               maxH='auto'
+               minH='89vh'
+               // bg='red.100'
             >
                <Outlet />
             </Box>

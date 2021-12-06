@@ -19,8 +19,8 @@ import { useNavigate } from 'react-router-dom';
 
 const LinkItems = [
    { name: 'Home', icon: FiHome, navigateTo: '/' },
-   { name: 'Manage User', icon: FiTrendingUp, navigateTo: '/manages/user' },
-   { name: 'Explore', icon: FiCompass, navigateTo: '/' },
+   { name: 'Manage User', icon: FiTrendingUp, navigateTo: '/users/manage' },
+   { name: 'Room', icon: FiCompass, navigateTo: '/rooms/manage' },
    { name: 'Favourites', icon: FiStar, navigateTo: '/' },
    { name: 'Settings', icon: FiSettings, navigateTo: '/' },
 ];
