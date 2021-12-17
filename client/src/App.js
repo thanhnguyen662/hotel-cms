@@ -1,7 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
-import '@fontsource/raleway/500.css';
-import '@fontsource/open-sans/700.css';
+// import '@fontsource/raleway/500.css';
+// import '@fontsource/open-sans/700.css';
 import theme from './theme';
 import Routers from './routers';
 import { useDispatch } from 'react-redux';

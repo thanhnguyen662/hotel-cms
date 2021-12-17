@@ -34,6 +34,34 @@ model Role {
   users User[]
 }
 
+model Room {
+  id              Int         @id @default(autoincrement())
+  number          Int?
+  floor           Int?
+  roomStatusId    Int?
+  roomStatus      RoomStatus? @relation(fields: [roomStatusId], references: [id])
+  roomDetail      RoomDetail?
+  updateStatusdAt DateTime?
+}
+
+model RoomDetail {
+  id      Int      @id @default(autoincrement())
+  img     String[]
+  price   Int?
+  bedroom String?
+  type    String?
+  roomId  Int?     @unique
+  room    Room?    @relation(fields: [roomId], references: [id])
+}
+
+model RoomStatus {
+  id     Int     @id @default(autoincrement())
+  status String?
+  code   String?
+  note   String?
+  rooms  Room[]
+}
+
 model Sessions {
   sid       String    @id
   expire    DateTime

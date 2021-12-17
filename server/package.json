@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "prisma": {
-    "schema": "src/app/models/schema.prisma"
+    "schema": "src/app/models/schema.prisma",
+    "seed": "node src/app/models/seed.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -35,6 +36,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
+    "faker": "^5.5.3",
     "moment": "^2.29.1",
     "passport": "^0.5.0",
     "passport-local": "^1.0.0"

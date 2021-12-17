@@ -15,8 +15,6 @@
     "@testing-library/user-event": "^12.0.2",
     "axios": "^0.24.0",
     "formik": "^2.2.9",
-    "framer-motion": "^4.0.0",
-    "rc-table": "^7.21.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^3.11.0",
@@ -24,6 +22,8 @@
     "react-router-dom": "^6.0.2",
     "react-scripts": "4.0.3",
     "react-table": "^7.7.0",
+    "swiper": "^7.3.1",
+    "framer-motion": "^4.0.0",
     "use-react-router-breadcrumbs": "^3.0.1",
     "web-vitals": "^0.2.2",
     "yup": "^0.32.11"
