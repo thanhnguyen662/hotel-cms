@@ -1,42 +1,39 @@
 import { ChevronDownIcon, SearchIcon } from '@chakra-ui/icons';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import userApi from '../../../../api/userApi';
-import ManageTable from '../../../../components/ManageTable';
 import {
    Avatar,
+   Box,
    Button,
+   Heading,
+   HStack,
    Input,
    InputGroup,
    InputLeftElement,
-   Box,
-   Heading,
-   HStack,
-   VStack,
-   Select,
-   useDisclosure,
-   Text,
    Menu,
    MenuButton,
-   MenuList,
    MenuItem,
-   useToast,
+   MenuList,
+   Select,
+   Text,
+   VStack,
 } from '@chakra-ui/react';
-import EditProfileModal from '../../components/EditProfileModel';
-import AlertDialogBox from '../../../../components/AlertDialogBox';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import userApi from '../../../../api/userApi';
+import ManageTable from '../../../../components/ManageTable';
 
 function ManageUserPage(props) {
-   const { onOpen, isOpen, onClose } = useDisclosure();
-   const toast = useToast();
    const timeout = useRef(null);
    const currentUserRole = useSelector((state) => state.user.role);
-   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-   const [rowValues, setRowValues] = useState({});
    const [allUser, setAllUser] = useState([]);
    const [searchKeyword, setSearchKeyword] = useState({
       username: undefined,
       role: 'all',
    });
+
+   let location = useLocation();
+   let [searchParams, setSearchParams] = useSearchParams();
+   console.log('searchParams: ', searchParams.get('user'));
 
    useEffect(() => {
       const getAllUserAccount = async () => {
@@ -44,7 +41,7 @@ function ManageUserPage(props) {
          setAllUser(response);
       };
       getAllUserAccount();
-   }, [searchKeyword]);
+   }, [searchKeyword, location]);
 
    const data = useMemo(() => [...allUser], [allUser]);
    const columns = useMemo(
@@ -78,28 +75,35 @@ function ManageUserPage(props) {
       columns.push({
          Header: 'Actions',
          accessor: 'id',
-         Cell: (record) => (
-            <>
-               <Menu>
-                  <MenuButton
-                     as={Button}
-                     rightIcon={<ChevronDownIcon />}
-                     colorScheme='blue'
-                     onClick={() => setRowValues(record.row.values)}
-                  >
-                     Actions
-                  </MenuButton>
-                  <MenuList>
-                     <MenuItem onClick={() => onClickEdit(record)}>
-                        Edit
-                     </MenuItem>
-                     <MenuItem onClick={() => setIsDeleteAlertOpen(true)}>
-                        Delete
-                     </MenuItem>
-                  </MenuList>
-               </Menu>
-            </>
-         ),
+         Cell: (record) => {
+            return (
+               <>
+                  <Menu>
+                     <MenuButton
+                        as={Button}
+                        rightIcon={<ChevronDownIcon />}
+                        colorScheme='blue'
+                     >
+                        Actions
+                     </MenuButton>
+                     <MenuList>
+                        <Link
+                           to={`/users/manage/edit/${record.row.values.id}`}
+                           state={{ backgroundLocation: location }}
+                        >
+                           <MenuItem>Edit</MenuItem>
+                        </Link>
+                        <Link
+                           to={`/users/manage/delete/${record.row.values.id}`}
+                           state={{ backgroundLocation: location }}
+                        >
+                           <MenuItem>Delete</MenuItem>
+                        </Link>
+                     </MenuList>
+                  </Menu>
+               </>
+            );
+         },
       });
    }
 
@@ -108,75 +112,6 @@ function ManageUserPage(props) {
       timeout.current = setTimeout(() => {
          setSearchKeyword({ ...searchKeyword, [key]: value });
       }, 400);
-   };
-
-   const onClickEdit = () => {
-      onOpen();
-   };
-
-   const handleEditUser = async (formData) => {
-      try {
-         const response = await userApi.editProfile(formData);
-         if (response.message === 'edit_account_success') {
-            setAllUser((prev) => {
-               const findIndex = prev.findIndex((i) => i.id === response.id);
-               prev[findIndex] = { ...response };
-               return [...prev];
-            });
-            showToastNotification(
-               'Successful',
-               `Edit ${response.username} Success`,
-               'success',
-            );
-            onClose();
-         }
-      } catch (error) {
-         console.log(error);
-      }
-   };
-
-   const handleResetPassword = async (userId) => {
-      try {
-         const response = await userApi.resetPassword({ userId });
-         if (response.message === 'reset_password_success') {
-            showToastNotification(
-               'Successful',
-               `Reset Password of ${response.username} success`,
-               'success',
-            );
-            onClose();
-         }
-      } catch (error) {
-         console.log(error);
-      }
-   };
-
-   const handleOnDelete = async () => {
-      try {
-         const response = await userApi.delete({
-            userId: rowValues.id,
-         });
-         if (response.message === 'delete_account_success') {
-            setAllUser(allUser.filter((i) => i.id !== Number(response.id)));
-            showToastNotification(
-               'Successful',
-               `Delete account of ${response.username} success`,
-               'success',
-            );
-         }
-      } catch (error) {
-         console.log(error);
-      }
-   };
-
-   const showToastNotification = (title, description, status) => {
-      toast({
-         title: title,
-         description: description,
-         status: status,
-         duration: 9000,
-         isClosable: true,
-      });
    };
 
    return (
@@ -214,19 +149,6 @@ function ManageUserPage(props) {
             </HStack>
             <ManageTable data={data} columns={columns} />
          </VStack>
-
-         <EditProfileModal
-            isOpen={isOpen}
-            onClose={onClose}
-            rowValues={rowValues}
-            onSubmit={handleEditUser}
-            onResetPassword={handleResetPassword}
-         />
-         <AlertDialogBox
-            isDeleteAlertOpen={isDeleteAlertOpen}
-            setIsDeleteAlertOpen={setIsDeleteAlertOpen}
-            handleOnDelete={handleOnDelete}
-         />
       </Box>
    );
 }

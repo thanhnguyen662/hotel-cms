@@ -21,8 +21,8 @@ class RoomController {
                ],
             },
             include: {
-               roomStatus: true,
                roomDetail: true,
+               statusOfRooms: true,
             },
          });
 
@@ -40,7 +40,7 @@ class RoomController {
             },
             include: {
                roomDetail: true,
-               roomStatus: true,
+               statusOfRooms: true,
             },
          });
 

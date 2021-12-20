@@ -6,8 +6,9 @@ import {
    Stack,
    Text,
    VStack,
+   Button,
 } from '@chakra-ui/react';
-import { useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import roomApi from '../../../../api/roomApi';
 import FloorBar from '../../components/FloorBar';
@@ -15,6 +16,7 @@ import RoomDiagram from '../../components/RoomDiagram';
 import RoomStatistics from '../../components/RoomStatistics';
 import RoomStatus from '../../components/RoomStatus';
 import RoomToolBar from '../../components/RoomToolBar';
+import { AddIcon } from '@chakra-ui/icons';
 
 function ManageRoomPage(props) {
    const { roomNumber } = useParams();
@@ -25,6 +27,8 @@ function ManageRoomPage(props) {
       roomType: 'all',
    });
 
+   let location = useLocation();
+
    useEffect(() => {
       const getRoomsInDb = async () => {
          try {
@@ -32,7 +36,7 @@ function ManageRoomPage(props) {
                floor: floor,
                roomType: searchData.roomType,
             });
-            console.log('rooms: ', response);
+            // console.log('rooms: ', response);
             setRooms(response);
          } catch (error) {
             console.log(error);
@@ -48,7 +52,7 @@ function ManageRoomPage(props) {
                roomNumber: roomNumber || 101,
             });
             setSelectedRoom(response);
-            console.log('room by id: ', response);
+            // console.log('room by id: ', response);
          } catch (error) {
             console.log(error);
          }
@@ -87,10 +91,20 @@ function ManageRoomPage(props) {
                         handleDownFloor={handleDownFloor}
                      />
                   </HStack>
-                  <RoomToolBar
-                     handleChangeSearchValue={handleChangeSearchValue}
-                     searchData={searchData}
-                  />
+                  <HStack>
+                     <RoomToolBar
+                        handleChangeSearchValue={handleChangeSearchValue}
+                        searchData={searchData}
+                     />
+                     <Link
+                        to={`/rooms/add`}
+                        state={{ backgroundLocation: location }}
+                     >
+                        <Button leftIcon={<AddIcon />} colorScheme={'green'}>
+                           Add
+                        </Button>
+                     </Link>
+                  </HStack>
                   <RoomDiagram rooms={rooms} />
                </VStack>
             </Box>

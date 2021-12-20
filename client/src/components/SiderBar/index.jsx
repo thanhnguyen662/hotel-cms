@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom';
 const LinkItems = [
    { name: 'Home', icon: FiHome, navigateTo: '/' },
    { name: 'Manage User', icon: FiTrendingUp, navigateTo: '/users/manage' },
-   { name: 'Room', icon: FiCompass, navigateTo: '/rooms/manage' },
+   { name: 'Room', icon: FiCompass, navigateTo: '/rooms/manage/101' },
    { name: 'Favourites', icon: FiStar, navigateTo: '/' },
    { name: 'Settings', icon: FiSettings, navigateTo: '/' },
 ];
