@@ -1,28 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import {
-   Avatar,
+   Box,
    Button,
    Center,
    FormControl,
+   FormErrorMessage,
    FormLabel,
    HStack,
    Input,
-   Modal,
-   ModalBody,
-   ModalCloseButton,
-   ModalContent,
-   ModalHeader,
-   ModalOverlay,
+   NumberInput,
+   NumberInputField,
    Select,
    Stack,
    useColorModeValue,
-   FormErrorMessage,
-   NumberInput,
-   NumberInputField,
-   Box,
 } from '@chakra-ui/react';
 import { Formik } from 'formik';
+import PropTypes from 'prop-types';
+import React from 'react';
 import * as Yup from 'yup';
 import restaurantApi from '../../../../api/restaurantApi';
 
@@ -30,8 +23,6 @@ AddFoods.propTypes = {
    onClose: PropTypes.func,
    handleAdd: PropTypes.func,
 };
-
-const handleFoodTable = (data) => {};
 
 function AddFoods(props) {
    //PROPS

@@ -15,9 +15,14 @@ import {
    FiStar,
    FiTrendingUp,
 } from 'react-icons/fi';
-import { MdRestaurantMenu, MdRoomService } from 'react-icons/md';
+import {
+   MdRestaurantMenu,
+   MdRoomService,
+   MdOutlineEventNote,
+} from 'react-icons/md';
 import { GrServices } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
+import { RiCalendarEventLine } from 'react-icons/ri';
 
 const LinkItems = [
    { name: 'Home', icon: FiHome, navigateTo: '/' },
@@ -38,6 +43,11 @@ const LinkItems = [
       name: 'Order service',
       icon: MdRoomService,
       navigateTo: 'service/order',
+   },
+   {
+      name: 'Manage event',
+      icon: RiCalendarEventLine,
+      navigateTo: 'event/manage',
    },
 ];
 

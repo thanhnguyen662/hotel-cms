@@ -7,8 +7,6 @@ import {
    ModalContent,
    ModalHeader,
    ModalCloseButton,
-   Button,
-   ModalFooter,
 } from '@chakra-ui/react';
 import AddFoods from '../AddFoods';
 import EditFood from '../EditFood';
