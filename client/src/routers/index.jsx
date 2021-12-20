@@ -7,6 +7,7 @@ import Profile from '../features/Profile';
 import Rooms from '../features/Rooms';
 import MainLayout from '../layouts/Main';
 import Foods from '../features/Foods';
+import Event from '../features/Event';
 
 function Routers(props) {
    return (
@@ -18,6 +19,7 @@ function Routers(props) {
                <Route path='rooms/*' element={<Rooms />} />
                <Route path='profile/*' element={<Profile />} />
                <Route path='service/*' element={<Foods />} />
+               <Route path='event/*' element={<Event />} />
                <Route path='/' element={<Home />} />
             </Route>
          </Routes>
