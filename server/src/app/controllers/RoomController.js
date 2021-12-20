@@ -1,4 +1,5 @@
 const prisma = require('../models/prisma');
+const faker = require('faker');
 
 class RoomController {
    getRooms = async (req, res, next) => {
@@ -21,8 +22,8 @@ class RoomController {
                ],
             },
             include: {
-               roomStatus: true,
                roomDetail: true,
+               statusOfRooms: true,
             },
          });
 
@@ -40,11 +41,61 @@ class RoomController {
             },
             include: {
                roomDetail: true,
-               roomStatus: true,
+               statusOfRooms: {
+                  include: {
+                     roomStatus: true,
+                  },
+               },
             },
          });
 
          return res.status(200).json(response);
+      } catch (error) {
+         return next(error);
+      }
+   };
+
+   createRoom = async (req, res, next) => {
+      const { roomNumber, floor, roomType, bedroom, price } = req.body;
+      const imageURL = `${faker.image.business()}?random=${Math.round(
+         Math.random() * 1000
+      )}`;
+
+      try {
+         const response = await prisma.room.create({
+            data: {
+               number: Number(roomNumber),
+               floor: Number(floor),
+
+               roomDetail: {
+                  create: {
+                     bedroom: bedroom,
+                     price: Number(price),
+                     type: roomType,
+                     img: [imageURL, imageURL],
+                  },
+               },
+
+               statusOfRooms: {
+                  createMany: {
+                     data: [
+                        {
+                           roomStatusId: 2,
+                           roleId: 4,
+                        },
+                        {
+                           roomStatusId: 2,
+                           roleId: 3,
+                        },
+                     ],
+                  },
+               },
+            },
+         });
+
+         return res
+            .status(200)
+            .json({ ...response, message: 'room_created_successfully' });
       } catch (error) {
          return next(error);
       }

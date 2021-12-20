@@ -29,19 +29,20 @@ model Profile {
 }
 
 model Role {
-  id    Int     @id @default(autoincrement())
-  name  String?
-  users User[]
+  id            Int            @id @default(autoincrement())
+  name          String?
+  users         User[]
+  statusOfRooms StatusOfRoom[]
 }
 
 model Room {
-  id              Int         @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
+  name            String?
   number          Int?
   floor           Int?
-  roomStatusId    Int?
-  roomStatus      RoomStatus? @relation(fields: [roomStatusId], references: [id])
   roomDetail      RoomDetail?
   updateStatusdAt DateTime?
+  statusOfRooms   StatusOfRoom[]
 }
 
 model RoomDetail {
@@ -55,11 +56,24 @@ model RoomDetail {
 }
 
 model RoomStatus {
-  id     Int     @id @default(autoincrement())
-  status String?
-  code   String?
-  note   String?
-  rooms  Room[]
+  id            Int            @id @default(autoincrement())
+  status        String?
+  code          String?
+  note          String?
+  statusOfRooms StatusOfRoom[]
+}
+
+model StatusOfRoom {
+  id           Int         @id @default(autoincrement())
+  roomStatusId Int?
+  roomStatus   RoomStatus? @relation(fields: [roomStatusId], references: [id])
+  roomId       Int?
+  room         Room?       @relation(fields: [roomId], references: [id])
+  roleId       Int?
+  role         Role?       @relation(fields: [roleId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
 }
 
 model Sessions {

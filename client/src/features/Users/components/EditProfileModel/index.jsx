@@ -3,6 +3,7 @@ import {
    Button,
    Center,
    FormControl,
+   FormErrorMessage,
    FormLabel,
    HStack,
    Input,
@@ -15,11 +16,13 @@ import {
    Select,
    Stack,
    useColorModeValue,
-   FormErrorMessage,
+   useToast,
 } from '@chakra-ui/react';
 import { Formik } from 'formik';
-import * as Yup from 'yup';
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import * as Yup from 'yup';
+import userApi from '../../../../api/userApi';
 
 const EditForm = (props) => {
    const { onFormSubmit, editData, onClose, onClickResetPassword } = props;
@@ -154,35 +157,82 @@ const EditForm = (props) => {
 };
 
 function EditProfileModal(props) {
-   const { isOpen, onClose, rowValues, onSubmit, onResetPassword } = props;
    const [editData, setEditData] = useState({});
+   const { userId } = useParams();
+   const toast = useToast();
 
-   // console.log(rowValues);
+   let location = useLocation();
+   const navigate = useNavigate();
 
    useEffect(() => {
-      setEditData({
-         id: rowValues.id,
-         firstName: rowValues['profile.firstName'],
-         lastName: rowValues['profile.lastName'],
-         username: rowValues.username,
-         role: rowValues['role.name'],
-      });
-   }, [rowValues]);
+      const getOldUserDataInDb = async () => {
+         try {
+            const response = await userApi.userProfile({
+               userId: userId,
+            });
 
-   const onFormSubmit = (formData) => {
-      onSubmit(formData);
+            setEditData({
+               id: response.id,
+               firstName: response.profile.firstName,
+               lastName: response.profile.lastName,
+               username: response.username,
+               role: response.role.name,
+            });
+         } catch (error) {
+            console.log(error);
+         }
+      };
+      getOldUserDataInDb();
+   }, [userId]);
+
+   const onFormSubmit = async (formData) => {
+      try {
+         const response = await userApi.editProfile(formData);
+         if (response.message === 'edit_account_success') {
+            showToastNotification(
+               'Successful',
+               `Edit ${response.username} Success`,
+               'success',
+            );
+            navigate(-1);
+         }
+      } catch (error) {
+         console.log(error);
+      }
    };
 
-   const onClickResetPassword = () => {
-      onResetPassword(rowValues.id);
+   const onClickResetPassword = async () => {
+      try {
+         const response = await userApi.resetPassword({ userId });
+         if (response.message === 'reset_password_success') {
+            showToastNotification(
+               'Successful',
+               `Reset Password of ${response.username} success`,
+               'success',
+            );
+            navigate(-1);
+         }
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
+   const showToastNotification = (title, description, status) => {
+      toast({
+         title: title,
+         description: description,
+         status: status,
+         duration: 9000,
+         isClosable: true,
+      });
    };
 
    return (
       <>
          <Modal
             isCentered
-            onClose={onClose}
-            isOpen={isOpen}
+            onClose={() => navigate(-1)}
+            isOpen={location.state?.backgroundLocation ? true : false}
             motionPreset='slideInBottom'
          >
             <ModalOverlay />
@@ -190,14 +240,15 @@ function EditProfileModal(props) {
                <ModalHeader>Edit Profile</ModalHeader>
                <ModalCloseButton />
                <ModalBody>
-                  <EditForm
-                     onFormSubmit={onFormSubmit}
-                     editData={editData}
-                     onClose={onClose}
-                     onClickResetPassword={onClickResetPassword}
-                  />
+                  {Object.keys(editData).length > 0 && (
+                     <EditForm
+                        onFormSubmit={onFormSubmit}
+                        editData={editData}
+                        onClose={() => navigate(-1)}
+                        onClickResetPassword={onClickResetPassword}
+                     />
+                  )}
                </ModalBody>
-               {/* <ModalFooter></ModalFooter> */}
             </ModalContent>
          </Modal>
       </>

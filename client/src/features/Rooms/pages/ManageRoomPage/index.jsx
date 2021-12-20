@@ -1,5 +1,7 @@
+import { AddIcon } from '@chakra-ui/icons';
 import {
    Box,
+   Button,
    Heading,
    HStack,
    Spacer,
@@ -7,8 +9,8 @@ import {
    Text,
    VStack,
 } from '@chakra-ui/react';
-import { useParams } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import roomApi from '../../../../api/roomApi';
 import FloorBar from '../../components/FloorBar';
 import RoomDiagram from '../../components/RoomDiagram';
@@ -17,13 +19,17 @@ import RoomStatus from '../../components/RoomStatus';
 import RoomToolBar from '../../components/RoomToolBar';
 
 function ManageRoomPage(props) {
-   const { roomNumber } = useParams();
    const [floor, setFloor] = useState(1);
    const [rooms, setRooms] = useState([]);
    const [selectedRoom, setSelectedRoom] = useState({});
+   let [searchParams, setSearchParams] = useSearchParams();
    const [searchData, setSearchData] = useState({
       roomType: 'all',
    });
+
+   let location = useLocation();
+   let selectedRoomArr = searchParams.get('selectedRoomArr');
+   let decodeURI = decodeURIComponent(selectedRoomArr);
 
    useEffect(() => {
       const getRoomsInDb = async () => {
@@ -32,20 +38,21 @@ function ManageRoomPage(props) {
                floor: floor,
                roomType: searchData.roomType,
             });
-            console.log('rooms: ', response);
+            // console.log('rooms: ', response);
             setRooms(response);
          } catch (error) {
             console.log(error);
          }
       };
       getRoomsInDb();
-   }, [floor, searchData]);
+   }, [floor, searchData, location]);
 
    useEffect(() => {
       const getRoomInDb = async () => {
+         if (JSON.parse(decodeURI).length !== 1) return;
          try {
             const response = await roomApi.getRoomById({
-               roomNumber: roomNumber || 101,
+               roomNumber: JSON.parse(decodeURI)[0] || 101,
             });
             setSelectedRoom(response);
             console.log('room by id: ', response);
@@ -54,7 +61,11 @@ function ManageRoomPage(props) {
          }
       };
       getRoomInDb();
-   }, [roomNumber]);
+   }, [decodeURI]);
+
+   const handleSetSearchParams = (arrayToURI) => {
+      setSearchParams({ selectedRoomArr: arrayToURI });
+   };
 
    const handleUpFloor = () => {
       setFloor(floor + 1);
@@ -87,11 +98,24 @@ function ManageRoomPage(props) {
                         handleDownFloor={handleDownFloor}
                      />
                   </HStack>
-                  <RoomToolBar
-                     handleChangeSearchValue={handleChangeSearchValue}
-                     searchData={searchData}
+                  <HStack>
+                     <RoomToolBar
+                        handleChangeSearchValue={handleChangeSearchValue}
+                        searchData={searchData}
+                     />
+                     <Link
+                        to={`/rooms/add`}
+                        state={{ backgroundLocation: location }}
+                     >
+                        <Button leftIcon={<AddIcon />} colorScheme={'green'}>
+                           Add
+                        </Button>
+                     </Link>
+                  </HStack>
+                  <RoomDiagram
+                     rooms={rooms}
+                     handleSetSearchParams={handleSetSearchParams}
                   />
-                  <RoomDiagram rooms={rooms} />
                </VStack>
             </Box>
          </Box>
@@ -106,8 +130,20 @@ function ManageRoomPage(props) {
                >
                   <RoomStatistics />
                </Box>
-               <Box bg='white' boxShadow='xl' rounded='lg' width='full'>
-                  <RoomStatus selectedRoom={selectedRoom} />
+               <Box width='full'>
+                  {JSON.parse(decodeURI).length === 1 ? (
+                     <RoomStatus selectedRoom={selectedRoom} />
+                  ) : (
+                     <>
+                        <Box>
+                           <HStack>
+                              {JSON.parse(decodeURI)?.map((i) => (
+                                 <Text key={i}>{i}</Text>
+                              ))}
+                           </HStack>
+                        </Box>
+                     </>
+                  )}
                </Box>
             </VStack>
          </Box>

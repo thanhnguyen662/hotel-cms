@@ -22,7 +22,11 @@ import { useNavigate } from 'react-router-dom';
 const LinkItems = [
    { name: 'Home', icon: FiHome, navigateTo: '/' },
    { name: 'Manage User', icon: FiTrendingUp, navigateTo: '/users/manage' },
-   { name: 'Room', icon: FiCompass, navigateTo: '/rooms/manage' },
+   {
+      name: 'Room',
+      icon: FiCompass,
+      navigateTo: '/rooms/manage?selectedRoomArr=%255B101%255D',
+   },
    { name: 'Favourites', icon: FiStar, navigateTo: '/' },
    { name: 'Settings', icon: FiSettings, navigateTo: '/' },
    {
@@ -48,14 +52,18 @@ const NavItem = ({ icon, children, navigateTo, ...rest }) => {
          <Flex
             align='center'
             p='4'
-            mx='4'
+            mx='2'
             borderRadius='lg'
             role='group'
             cursor='pointer'
+            fontSize='sm'
+            color='whiteAlpha.700'
             _hover={{
-               bg: 'cyan.400',
-               color: 'white',
+               bg: 'blackAlpha.300',
+               color: 'whiteAlpha.900',
             }}
+            fontWeight='600'
+            transition='.15s ease'
             {...rest}
          >
             {icon && (
@@ -78,7 +86,7 @@ function SiderBar({ onClose, ...rest }) {
    return (
       <Box
          transition='3s ease'
-         bg={useColorModeValue('white', 'gray.900')}
+         bg={useColorModeValue('#3C4178', 'gray.900')}
          borderRight='1px'
          borderRightColor={useColorModeValue('gray.200', 'gray.700')}
          w={{ base: 'full', md: 60 }}
@@ -86,15 +94,21 @@ function SiderBar({ onClose, ...rest }) {
          h='full'
          {...rest}
       >
-         <Flex h='20' alignItems='center' mx='8' justifyContent='space-between'>
-            <Text fontSize='2xl' fontFamily='monospace' fontWeight='bold'>
+         <Flex h='20' alignItems='center' mx='6' justifyContent='space-between'>
+            {/* <Text fontSize='2xl' fontFamily='monospace' fontWeight='bold'>
                Logo
-            </Text>
+            </Text> */}
+            <Flex px='0' py='5' align='center'>
+               <Text fontSize='2xl' ml='2' color='white' fontWeight='semibold'>
+                  Hotel CMS
+               </Text>
+            </Flex>
             <CloseButton
                display={{ base: 'flex', md: 'none' }}
                onClick={onClose}
             />
          </Flex>
+
          {LinkItems.map((link) => (
             <NavItem
                key={link.name}

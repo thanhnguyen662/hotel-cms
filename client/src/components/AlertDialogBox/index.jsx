@@ -6,38 +6,57 @@ import {
    AlertDialogHeader,
    AlertDialogOverlay,
    Button,
+   useToast,
 } from '@chakra-ui/react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import userApi from '../../api/userApi';
 
-AlertDialogBox.propTypes = {
-   isDeleteAlertOpen: PropTypes.bool,
-   setIsDeleteAlertOpen: PropTypes.func,
-   handleOnDelete: PropTypes.func,
-};
-
-AlertDialogBox.defaultProps = {
-   isDeleteAlertOpen: false,
-   setIsDeleteAlertOpen: null,
-   handleOnDelete: null,
-};
+AlertDialogBox.propTypes = {};
 
 function AlertDialogBox(props) {
-   const { isDeleteAlertOpen, setIsDeleteAlertOpen, handleOnDelete } = props;
-   const onClose = () => setIsDeleteAlertOpen(false);
+   const { userId } = useParams();
+   const toast = useToast();
    const cancelRef = useRef();
 
-   const onClickDelete = () => {
-      handleOnDelete();
-      onClose();
+   let location = useLocation();
+   const navigate = useNavigate();
+
+   const onClickDelete = async () => {
+      try {
+         const response = await userApi.delete({
+            userId: userId,
+         });
+         if (response.message === 'delete_account_success') {
+            showToastNotification(
+               'Successful',
+               `Delete account of ${response.username} success`,
+               'success',
+            );
+            navigate(-1);
+         }
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
+   const showToastNotification = (title, description, status) => {
+      toast({
+         title: title,
+         description: description,
+         status: status,
+         duration: 9000,
+         isClosable: true,
+      });
    };
 
    return (
       <>
          <AlertDialog
-            isOpen={isDeleteAlertOpen}
+            isOpen={location.state?.backgroundLocation ? true : false}
             leastDestructiveRef={cancelRef}
-            onClose={onClose}
+            onClose={() => navigate(-1)}
          >
             <AlertDialogOverlay>
                <AlertDialogContent>
@@ -50,7 +69,7 @@ function AlertDialogBox(props) {
                   </AlertDialogBody>
 
                   <AlertDialogFooter>
-                     <Button ref={cancelRef} onClick={onClose}>
+                     <Button ref={cancelRef} onClick={() => navigate(-1)}>
                         Cancel
                      </Button>
                      <Button colorScheme='red' onClick={onClickDelete} ml={3}>
