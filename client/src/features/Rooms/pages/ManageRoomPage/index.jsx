@@ -16,17 +16,19 @@ import FloorBar from '../../components/FloorBar';
 import RoomDiagram from '../../components/RoomDiagram';
 import RoomStatistics from '../../components/RoomStatistics';
 import RoomStatus from '../../components/RoomStatus';
+import RoomTempPrice from '../../components/RoomTempPrice';
 import RoomToolBar from '../../components/RoomToolBar';
 
 function ManageRoomPage(props) {
    const [floor, setFloor] = useState(1);
    const [rooms, setRooms] = useState([]);
    const [selectedRoom, setSelectedRoom] = useState({});
-   let [searchParams, setSearchParams] = useSearchParams();
+   const [selectedRoomDetail, setSelectedRoomDetail] = useState([]);
    const [searchData, setSearchData] = useState({
       roomType: 'all',
    });
 
+   let [searchParams, setSearchParams] = useSearchParams();
    let location = useLocation();
    let selectedRoomArr = searchParams.get('selectedRoomArr');
    let decodeURI = decodeURIComponent(selectedRoomArr);
@@ -49,19 +51,32 @@ function ManageRoomPage(props) {
 
    useEffect(() => {
       const getRoomInDb = async () => {
-         if (JSON.parse(decodeURI).length !== 1) return;
+         if (JSON.parse(decodeURI)?.length !== 1) return;
          try {
             const response = await roomApi.getRoomById({
                roomNumber: JSON.parse(decodeURI)[0] || 101,
             });
             setSelectedRoom(response);
-            console.log('room by id: ', response);
+            // console.log('room by id: ', response);
          } catch (error) {
             console.log(error);
          }
       };
       getRoomInDb();
    }, [decodeURI]);
+
+   useEffect(() => {
+      setSelectedRoomDetail(() => {
+         const filterSelect = rooms.reduce((array, item) => {
+            if (JSON.parse(decodeURI)?.includes(item.number)) {
+               array.push(item);
+            }
+            return array;
+         }, []);
+
+         return [...filterSelect];
+      });
+   }, [decodeURI, rooms]);
 
    const handleSetSearchParams = (arrayToURI) => {
       setSearchParams({ selectedRoomArr: arrayToURI });
@@ -131,16 +146,15 @@ function ManageRoomPage(props) {
                   <RoomStatistics />
                </Box>
                <Box width='full'>
-                  {JSON.parse(decodeURI).length === 1 ? (
+                  {JSON.parse(decodeURI)?.length <= 1 ||
+                  JSON.parse(decodeURI) === null ? (
                      <RoomStatus selectedRoom={selectedRoom} />
                   ) : (
                      <>
                         <Box>
-                           <HStack>
-                              {JSON.parse(decodeURI)?.map((i) => (
-                                 <Text key={i}>{i}</Text>
-                              ))}
-                           </HStack>
+                           <RoomTempPrice
+                              selectedRoomDetail={selectedRoomDetail}
+                           />
                         </Box>
                      </>
                   )}

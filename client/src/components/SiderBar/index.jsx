@@ -31,7 +31,7 @@ const LinkItems = [
    { name: 'Settings', icon: FiSettings, navigateTo: '/' },
    {
       name: 'Manage service',
-      icon: GrServices,
+      icon: FiSettings,
       navigateTo: 'service/manage',
    },
    {
