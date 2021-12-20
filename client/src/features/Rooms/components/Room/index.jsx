@@ -1,26 +1,23 @@
 import { Button, Heading } from '@chakra-ui/react';
-import React from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 Room.propTypes = {
    roomNumber: PropTypes.number,
 };
 
 function Room(props) {
-   const { roomNumber, color } = props;
-
-   const navigate = useNavigate();
+   const { roomNumber, color, handleSelectedRoomArray, onRoomSelect } = props;
 
    const onClickRoom = (roomNumber) => {
-      navigate(`${roomNumber}`);
+      handleSelectedRoomArray(roomNumber);
    };
 
    return (
       <>
          <Button
             colorScheme={color}
-            variant='outline'
+            variant={onRoomSelect ? 'solid' : 'outline'}
             height='130px'
             w='full'
             onClick={() => onClickRoom(roomNumber)}

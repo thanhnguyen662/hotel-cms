@@ -1,33 +1,35 @@
+import { AddIcon } from '@chakra-ui/icons';
 import {
    Box,
+   Button,
    Heading,
    HStack,
    Spacer,
    Stack,
    Text,
    VStack,
-   Button,
 } from '@chakra-ui/react';
-import { Link, useLocation, useParams } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import roomApi from '../../../../api/roomApi';
 import FloorBar from '../../components/FloorBar';
 import RoomDiagram from '../../components/RoomDiagram';
 import RoomStatistics from '../../components/RoomStatistics';
 import RoomStatus from '../../components/RoomStatus';
 import RoomToolBar from '../../components/RoomToolBar';
-import { AddIcon } from '@chakra-ui/icons';
 
 function ManageRoomPage(props) {
-   const { roomNumber } = useParams();
    const [floor, setFloor] = useState(1);
    const [rooms, setRooms] = useState([]);
    const [selectedRoom, setSelectedRoom] = useState({});
+   let [searchParams, setSearchParams] = useSearchParams();
    const [searchData, setSearchData] = useState({
       roomType: 'all',
    });
 
    let location = useLocation();
+   let selectedRoomArr = searchParams.get('selectedRoomArr');
+   let decodeURI = decodeURIComponent(selectedRoomArr);
 
    useEffect(() => {
       const getRoomsInDb = async () => {
@@ -43,22 +45,27 @@ function ManageRoomPage(props) {
          }
       };
       getRoomsInDb();
-   }, [floor, searchData]);
+   }, [floor, searchData, location]);
 
    useEffect(() => {
       const getRoomInDb = async () => {
+         if (JSON.parse(decodeURI).length !== 1) return;
          try {
             const response = await roomApi.getRoomById({
-               roomNumber: roomNumber || 101,
+               roomNumber: JSON.parse(decodeURI)[0] || 101,
             });
             setSelectedRoom(response);
-            // console.log('room by id: ', response);
+            console.log('room by id: ', response);
          } catch (error) {
             console.log(error);
          }
       };
       getRoomInDb();
-   }, [roomNumber]);
+   }, [decodeURI]);
+
+   const handleSetSearchParams = (arrayToURI) => {
+      setSearchParams({ selectedRoomArr: arrayToURI });
+   };
 
    const handleUpFloor = () => {
       setFloor(floor + 1);
@@ -105,7 +112,10 @@ function ManageRoomPage(props) {
                         </Button>
                      </Link>
                   </HStack>
-                  <RoomDiagram rooms={rooms} />
+                  <RoomDiagram
+                     rooms={rooms}
+                     handleSetSearchParams={handleSetSearchParams}
+                  />
                </VStack>
             </Box>
          </Box>
@@ -120,8 +130,20 @@ function ManageRoomPage(props) {
                >
                   <RoomStatistics />
                </Box>
-               <Box bg='white' boxShadow='xl' rounded='lg' width='full'>
-                  <RoomStatus selectedRoom={selectedRoom} />
+               <Box width='full'>
+                  {JSON.parse(decodeURI).length === 1 ? (
+                     <RoomStatus selectedRoom={selectedRoom} />
+                  ) : (
+                     <>
+                        <Box>
+                           <HStack>
+                              {JSON.parse(decodeURI)?.map((i) => (
+                                 <Text key={i}>{i}</Text>
+                              ))}
+                           </HStack>
+                        </Box>
+                     </>
+                  )}
                </Box>
             </VStack>
          </Box>

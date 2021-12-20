@@ -10,6 +10,11 @@ const roomApi = {
       const url = '/rooms/room';
       return axiosClient.get(url, { params });
    },
+
+   createRoom: (data) => {
+      const url = '/rooms/room/create';
+      return axiosClient.post(url, data);
+   },
 };
 
 export default roomApi;

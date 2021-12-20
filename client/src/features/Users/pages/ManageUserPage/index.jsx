@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import userApi from '../../../../api/userApi';
 import ManageTable from '../../../../components/ManageTable';
 
@@ -32,8 +32,6 @@ function ManageUserPage(props) {
    });
 
    let location = useLocation();
-   let [searchParams, setSearchParams] = useSearchParams();
-   console.log('searchParams: ', searchParams.get('user'));
 
    useEffect(() => {
       const getAllUserAccount = async () => {
