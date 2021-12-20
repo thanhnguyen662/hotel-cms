@@ -15,6 +15,8 @@ import {
    FiStar,
    FiTrendingUp,
 } from 'react-icons/fi';
+import { MdRestaurantMenu, MdRoomService } from 'react-icons/md';
+import { GrServices } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
 
 const LinkItems = [
@@ -27,6 +29,16 @@ const LinkItems = [
    },
    { name: 'Favourites', icon: FiStar, navigateTo: '/' },
    { name: 'Settings', icon: FiSettings, navigateTo: '/' },
+   {
+      name: 'Manage service',
+      icon: GrServices,
+      navigateTo: 'service/manage',
+   },
+   {
+      name: 'Order service',
+      icon: MdRoomService,
+      navigateTo: 'service/order',
+   },
 ];
 
 const NavItem = ({ icon, children, navigateTo, ...rest }) => {

@@ -198,6 +198,10 @@ function RegisterForm(props) {
                                        id='confirmPassword'
                                        onChange={handleChange}
                                        value={values.confirmPassword}
+                                       onKeyPress={(value) =>
+                                          value.code === 'Enter' &&
+                                          handleSubmit()
+                                       }
                                     />
                                     <InputRightElement h={'full'}>
                                        <Button
