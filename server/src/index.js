@@ -36,7 +36,6 @@ app.use(passport.session());
 app.use(express.json());
 
 const PORT = process.env.PORT || 9000;
-console.log(process.env.DATABASE_URL);
 route(app);
 
 app.listen(PORT, () => {

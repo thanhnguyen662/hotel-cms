@@ -107,6 +107,9 @@ function SignInForm(props) {
                                     onChange={handleChange}
                                     id='password'
                                     value={values.password}
+                                    onKeyPress={(value) =>
+                                       value.code === 'Enter' && handleSubmit()
+                                    }
                                  />
                                  <FormErrorMessage>
                                     {errors.password}
