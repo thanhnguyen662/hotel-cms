@@ -15,14 +15,9 @@ import {
    FiStar,
    FiTrendingUp,
 } from 'react-icons/fi';
-import {
-   MdRestaurantMenu,
-   MdRoomService,
-   MdOutlineEventNote,
-} from 'react-icons/md';
-import { GrServices } from 'react-icons/gr';
-import { useNavigate } from 'react-router-dom';
+import { MdRoomService } from 'react-icons/md';
 import { RiCalendarEventLine } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 const LinkItems = [
    { name: 'Home', icon: FiHome, navigateTo: '/' },
