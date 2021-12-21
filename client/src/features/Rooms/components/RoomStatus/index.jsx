@@ -1,4 +1,4 @@
-import { Badge, Box, Image, Button, VStack } from '@chakra-ui/react';
+import { Badge, Box, Image, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 // import PropTypes from 'prop-types';
 import priceFormat from '../../../../utils/PriceFormat';
@@ -26,17 +26,21 @@ function RoomStatus(props) {
    }, [selectedRoom]);
 
    return (
-      <VStack spacing='4'>
+      <VStack spacing='3'>
          <Box
             borderRadius='lg'
             overflow='hidden'
             bg='white'
             boxShadow='xl'
             rounded='lg'
+            w='100%'
          >
-            <Image src={selectedRoom?.roomDetail?.img[0]} />
+            <Image
+               src={selectedRoom?.roomDetail?.img[0]}
+               style={{ width: '100%', height: '100px', objectFit: 'cover' }}
+            />
 
-            <Box p='5'>
+            <Box p='4'>
                <Box display='flex' alignItems='baseline'>
                   <Badge
                      borderRadius='full'
@@ -62,8 +66,8 @@ function RoomStatus(props) {
                      fontWeight='semibold'
                      textTransform='capitalize'
                      isTruncated
+                     maxW={'220px'}
                   >
-                     {/* {selectedRoom?.roomDetail.type} */}
                      {selectedRoom?.name}
                   </Box>
                   <Box color='gray.600' mt='1'>
@@ -76,7 +80,7 @@ function RoomStatus(props) {
             </Box>
          </Box>
 
-         <Box w='full'>
+         {/* <Box w='full'>
             <Button
                w='full'
                colorScheme='red'
@@ -86,7 +90,7 @@ function RoomStatus(props) {
             >
                Order Now
             </Button>
-         </Box>
+         </Box> */}
       </VStack>
    );
 }

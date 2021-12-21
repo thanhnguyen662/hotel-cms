@@ -67,6 +67,20 @@ function ManageTable(props) {
                   );
                })}
             </Tbody>
+
+            {/* {footerGroups[0]?.getFooterGroupProps().length > 0 && (
+               <Tfoot>
+                  {footerGroups.map((group) => (
+                     <Tr {...group.getFooterGroupProps()}>
+                        {group.headers.map((column) => (
+                           <Td {...column.getFooterProps()}>
+                              {column.render('Footer')}
+                           </Td>
+                        ))}
+                     </Tr>
+                  ))}
+               </Tfoot>
+            )} */}
          </Table>
       </>
    );

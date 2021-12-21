@@ -25,7 +25,7 @@ const LinkItems = [
    {
       name: 'Room',
       icon: FiCompass,
-      navigateTo: '/rooms/manage?selectedRoomArr=%255B101%255D',
+      navigateTo: '/rooms/manage/101',
    },
    { name: 'Favourites', icon: FiStar, navigateTo: '/' },
    { name: 'Settings', icon: FiSettings, navigateTo: '/' },
