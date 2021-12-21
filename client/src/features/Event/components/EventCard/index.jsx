@@ -84,6 +84,18 @@ function EventCard(props) {
                   color={useColorModeValue('gray.600', 'gray.300')}
                   height='150px'
                   overflow='auto'
+                  css={{
+                     '&::-webkit-scrollbar': {
+                        width: '2px',
+                     },
+                     '&::-webkit-scrollbar-track': {
+                        width: '6px',
+                     },
+                     '&::-webkit-scrollbar-thumb': {
+                        background: '#ADAFC6',
+                        borderRadius: '24px',
+                     },
+                  }}
                >
                   Lorem ipsum dolor sit, amet consectetur adipisicing elit.
                   Tempora expedita dicta totam aspernatur doloremque.Lorem ipsum

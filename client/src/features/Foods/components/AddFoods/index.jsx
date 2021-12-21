@@ -30,8 +30,8 @@ function AddFoods(props) {
 
    //YUP
    const validationSchema = Yup.object().shape({
-      name: Yup.string().required('Food type is required!'),
-      type: Yup.string().required('Food type is required!'),
+      name: Yup.string().required('Service name is required!'),
+      type: Yup.string().required('Service type is required!'),
       price: Yup.number().min(1).required('Minimum price is 1$'),
    });
 
