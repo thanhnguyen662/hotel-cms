@@ -28,7 +28,7 @@ import AlertDialogBox from '../../../../components/AlertDialogBox';
 function ManageFoodsPage(props) {
    //STATE
    const { isOpen, onOpen, onClose } = useDisclosure();
-   const [modalData, setModalData] = useState('');
+   const [modalData, setModalData] = useState({});
    const [allFood, setAllFood] = useState([
       {
          name: '',
