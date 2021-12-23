@@ -9,9 +9,10 @@ import {
    Text,
    VStack,
 } from '@chakra-ui/react';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import Flatpickr from 'react-flatpickr';
 import { Link, useLocation, useParams } from 'react-router-dom';
-// import Flatpickr from 'react-flatpickr';
 import roomApi from '../../../../api/roomApi';
 import FloorBar from '../../components/FloorBar';
 import RoomDiagram from '../../components/RoomDiagram';
@@ -26,7 +27,10 @@ function ManageRoomPage(props) {
    const [rooms, setRooms] = useState([]);
    const [selectedRoom, setSelectedRoom] = useState({});
    const [addOrderRooms, setAddOrderRooms] = useState([]);
-   // const [date, setDate] = useState(new Date());
+   const [rangeDate, setRangeDate] = useState([
+      moment().toDate(),
+      moment().add(1, 'hour').toDate(),
+   ]);
    const [searchData, setSearchData] = useState({
       roomType: 'all',
    });
@@ -109,20 +113,7 @@ function ManageRoomPage(props) {
                         handleChangeSearchValue={handleChangeSearchValue}
                         searchData={searchData}
                      />
-                     <Box>
-                        <Button variant='outline'>Select Date</Button>
-                        {/* <Flatpickr
-                           data-enable-time
-                           value={date}
-                           onChange={(value) => setDate(value)}
-                           style={{
-                              borderWidth: '1px',
-                              height: '100%',
-                              borderRadius: '8px',
-                              padding: '9.5px 5px',
-                           }}
-                        /> */}
-                     </Box>
+
                      <Link
                         to={`/rooms/add`}
                         state={{ backgroundLocation: location }}
@@ -155,18 +146,40 @@ function ManageRoomPage(props) {
                <Box width='full' flex='1'>
                   <RoomStatus selectedRoom={selectedRoom} />
                </Box>
-               <Box flex='3' width='full'>
-                  <RoomTempPrice addOrderRooms={addOrderRooms} />
-               </Box>
 
-               <Box w='full' boxShadow='xl'>
-                  <Button
-                     colorScheme='red'
+               <Box flex='3' width='full'>
+                  <Box
                      w='full'
-                     disabled={!addOrderRooms?.length > 0}
+                     bg='white'
+                     borderTopRadius='lg'
+                     boxShadow='xl'
+                     pl='4'
+                     pt='2'
                   >
-                     Order
-                  </Button>
+                     <Flatpickr
+                        id='startDate'
+                        onChange={(value) => setRangeDate(value)}
+                        style={{
+                           height: '100%',
+                           borderRadius: '8px',
+                           padding: '9.5px 5px',
+                           width: '100%',
+                        }}
+                        options={{
+                           minDate: moment().subtract(1, 'minute').toDate(),
+                           enableTime: true,
+                           mode: 'range',
+                           defaultDate: [
+                              moment().toDate(),
+                              moment().add(1, 'hour').toDate(),
+                           ],
+                        }}
+                     />
+                  </Box>
+                  <RoomTempPrice
+                     addOrderRooms={addOrderRooms}
+                     rangeDate={rangeDate}
+                  />
                </Box>
             </VStack>
          </Box>
