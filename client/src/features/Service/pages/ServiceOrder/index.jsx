@@ -1,9 +1,9 @@
 import { Box, Stack } from '@chakra-ui/react';
 import React from 'react';
 
-FoodService.propTypes = {};
+ServiceOrder.propTypes = {};
 
-function FoodService(props) {
+function ServiceOrder(props) {
    return (
       <Stack direction={['column', 'row']} spacing='24px' minH='82vh'>
          <Box flex='1' bg='white' boxShadow='xl' rounded='lg' p='5'></Box>
@@ -11,4 +11,4 @@ function FoodService(props) {
    );
 }
 
-export default FoodService;
+export default ServiceOrder;

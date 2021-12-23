@@ -8,8 +8,8 @@ import {
    ModalHeader,
    ModalCloseButton,
 } from '@chakra-ui/react';
-import AddFoods from '../AddFoods';
-import EditFood from '../EditFood';
+import AddService from '../AddService';
+import EditService from '../EditService';
 
 index.propTypes = {
    isOpen: PropTypes.bool,
@@ -32,9 +32,9 @@ function index(props) {
                <ModalCloseButton />
                <ModalBody>
                   {modalData.modalType === 'Add' ? (
-                     <AddFoods onClose={onClose} handleAdd={handleAdd} />
+                     <AddService onClose={onClose} handleAdd={handleAdd} />
                   ) : (
-                     <EditFood
+                     <EditService
                         onClose={onClose}
                         modalData={modalData}
                         handleEdit={handleEdit}
