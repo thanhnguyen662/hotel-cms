@@ -13,7 +13,7 @@ const serviceApi = {
 
    deleteService: (data) => {
       const url = '/service/delete';
-      return axiosClient.delete(url, data);
+      return axiosClient.delete(url, { data });
    },
 
    editService: (data) => {

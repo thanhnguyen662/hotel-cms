@@ -31,6 +31,7 @@ function EventCard(props) {
    //FUNCTION
    const deleteEvent = async () => {
       const deleteEventItem = await eventApi.deleteEvent(data);
+      setIsDeleteAlertOpen(false);
       deleteEventProp(deleteEventItem);
    };
 

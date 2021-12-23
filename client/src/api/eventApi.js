@@ -13,7 +13,7 @@ const eventApi = {
 
    deleteEvent: (data) => {
       const url = '/event/delete';
-      return axiosClient.delete(url, data);
+      return axiosClient.delete(url, { data });
    },
 
    editEvent: (data) => {
