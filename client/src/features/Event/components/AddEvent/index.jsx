@@ -17,6 +17,7 @@ import Flatpickr from 'react-flatpickr';
 import * as Yup from 'yup';
 import eventApi from '../../../../api/eventApi';
 
+
 AddEvent.propTypes = {
    onClose: PropTypes.func,
    addNewEvent: PropTypes.func,
