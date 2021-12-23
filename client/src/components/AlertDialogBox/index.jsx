@@ -6,57 +6,27 @@ import {
    AlertDialogHeader,
    AlertDialogOverlay,
    Button,
-   useToast,
 } from '@chakra-ui/react';
 // import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import userApi from '../../api/userApi';
 
 AlertDialogBox.propTypes = {};
 
 function AlertDialogBox(props) {
-   const { userId } = useParams();
-   const toast = useToast();
+   const { isDeleteAlertOpen, setIsDeleteAlertOpen, handleOnDelete } = props;
+
    const cancelRef = useRef();
 
-   let location = useLocation();
-   const navigate = useNavigate();
-
    const onClickDelete = async () => {
-      try {
-         const response = await userApi.delete({
-            userId: userId,
-         });
-         if (response.message === 'delete_account_success') {
-            showToastNotification(
-               'Successful',
-               `Delete account of ${response.username} success`,
-               'success',
-            );
-            navigate(-1);
-         }
-      } catch (error) {
-         console.log(error);
-      }
-   };
-
-   const showToastNotification = (title, description, status) => {
-      toast({
-         title: title,
-         description: description,
-         status: status,
-         duration: 9000,
-         isClosable: true,
-      });
+      handleOnDelete();
    };
 
    return (
       <>
          <AlertDialog
-            isOpen={location.state?.backgroundLocation ? true : false}
+            isOpen={isDeleteAlertOpen}
             leastDestructiveRef={cancelRef}
-            onClose={() => navigate(-1)}
+            onClose={() => setIsDeleteAlertOpen(false)}
          >
             <AlertDialogOverlay>
                <AlertDialogContent>
@@ -69,7 +39,10 @@ function AlertDialogBox(props) {
                   </AlertDialogBody>
 
                   <AlertDialogFooter>
-                     <Button ref={cancelRef} onClick={() => navigate(-1)}>
+                     <Button
+                        ref={cancelRef}
+                        onClick={() => setIsDeleteAlertOpen(false)}
+                     >
                         Cancel
                      </Button>
                      <Button colorScheme='red' onClick={onClickDelete} ml={3}>

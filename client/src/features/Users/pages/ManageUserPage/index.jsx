@@ -14,23 +14,28 @@ import {
    MenuList,
    Select,
    Text,
+   useToast,
    VStack,
 } from '@chakra-ui/react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import userApi from '../../../../api/userApi';
+import AlertDialogBox from '../../../../components/AlertDialogBox';
 import ManageTable from '../../../../components/ManageTable';
 
 function ManageUserPage(props) {
    const timeout = useRef(null);
    const currentUserRole = useSelector((state) => state.user.role);
    const [allUser, setAllUser] = useState([]);
+   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+   const [selectedUser, setSelectedUser] = useState('');
    const [searchKeyword, setSearchKeyword] = useState({
       username: undefined,
       role: 'all',
    });
 
+   const toast = useToast();
    let location = useLocation();
 
    useEffect(() => {
@@ -91,12 +96,15 @@ function ManageUserPage(props) {
                         >
                            <MenuItem>Edit</MenuItem>
                         </Link>
-                        <Link
-                           to={`/users/manage/delete/${record.row.values.id}`}
-                           state={{ backgroundLocation: location }}
+
+                        <MenuItem
+                           onClick={() => {
+                              setIsDeleteAlertOpen(true);
+                              setSelectedUser(record.row.values.id);
+                           }}
                         >
-                           <MenuItem>Delete</MenuItem>
-                        </Link>
+                           Delete
+                        </MenuItem>
                      </MenuList>
                   </Menu>
                </>
@@ -110,6 +118,35 @@ function ManageUserPage(props) {
       timeout.current = setTimeout(() => {
          setSearchKeyword({ ...searchKeyword, [key]: value });
       }, 400);
+   };
+
+   const handleOnDelete = async () => {
+      try {
+         const response = await userApi.delete({
+            userId: selectedUser,
+         });
+         if (response.message === 'delete_account_success') {
+            showToastNotification(
+               'Successful',
+               `Delete account of ${response.username} success`,
+               'success',
+            );
+            setAllUser(allUser.filter((user) => user.id !== response.id));
+            setIsDeleteAlertOpen(false);
+         }
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
+   const showToastNotification = (title, description, status) => {
+      toast({
+         title: title,
+         description: description,
+         status: status,
+         duration: 9000,
+         isClosable: true,
+      });
    };
 
    return (
@@ -146,6 +183,11 @@ function ManageUserPage(props) {
                </InputGroup>
             </HStack>
             <ManageTable data={data} columns={columns} />
+            <AlertDialogBox
+               isDeleteAlertOpen={isDeleteAlertOpen}
+               setIsDeleteAlertOpen={setIsDeleteAlertOpen}
+               handleOnDelete={handleOnDelete}
+            />
          </VStack>
       </Box>
    );

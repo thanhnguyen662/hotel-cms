@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
+// import Flatpickr from 'react-flatpickr';
 import roomApi from '../../../../api/roomApi';
 import FloorBar from '../../components/FloorBar';
 import RoomDiagram from '../../components/RoomDiagram';
@@ -25,7 +26,7 @@ function ManageRoomPage(props) {
    const [rooms, setRooms] = useState([]);
    const [selectedRoom, setSelectedRoom] = useState({});
    const [addOrderRooms, setAddOrderRooms] = useState([]);
-
+   // const [date, setDate] = useState(new Date());
    const [searchData, setSearchData] = useState({
       roomType: 'all',
    });
@@ -108,6 +109,20 @@ function ManageRoomPage(props) {
                         handleChangeSearchValue={handleChangeSearchValue}
                         searchData={searchData}
                      />
+                     <Box>
+                        <Button variant='outline'>Select Date</Button>
+                        {/* <Flatpickr
+                           data-enable-time
+                           value={date}
+                           onChange={(value) => setDate(value)}
+                           style={{
+                              borderWidth: '1px',
+                              height: '100%',
+                              borderRadius: '8px',
+                              padding: '9.5px 5px',
+                           }}
+                        /> */}
+                     </Box>
                      <Link
                         to={`/rooms/add`}
                         state={{ backgroundLocation: location }}
@@ -140,27 +155,7 @@ function ManageRoomPage(props) {
                <Box width='full' flex='1'>
                   <RoomStatus selectedRoom={selectedRoom} />
                </Box>
-               <Box
-                  flex='3'
-                  width='full'
-                  // maxH='245px'
-                  // bg='white'
-                  // boxShadow='xl'
-                  // rounded='lg'
-                  // overflowY='auto'
-                  // css={{
-                  //    '&::-webkit-scrollbar': {
-                  //       width: '4px',
-                  //    },
-                  //    '&::-webkit-scrollbar-track': {
-                  //       width: '6px',
-                  //    },
-                  //    '&::-webkit-scrollbar-thumb': {
-                  //       background: '#ADAFC6',
-                  //       borderRadius: '24px',
-                  //    },
-                  // }}
-               >
+               <Box flex='3' width='full'>
                   <RoomTempPrice addOrderRooms={addOrderRooms} />
                </Box>
 

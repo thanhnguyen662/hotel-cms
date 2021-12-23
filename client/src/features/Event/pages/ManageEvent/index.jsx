@@ -1,28 +1,21 @@
-import { SearchIcon, AddIcon } from '@chakra-ui/icons';
+import { AddIcon, SearchIcon } from '@chakra-ui/icons';
 import {
    Box,
+   Button,
    Heading,
-   Stack,
-   Text,
    HStack,
-   VStack,
+   Input,
    InputGroup,
    InputLeftElement,
-   Input,
-   Select,
-   Button,
-   useDisclosure,
-   Image,
-   Menu,
-   MenuButton,
-   MenuItem,
-   MenuList,
-   useToast,
    SimpleGrid,
+   Stack,
+   Text,
+   useDisclosure,
+   VStack,
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react';
-import EventCard from '../../components/EventCard';
+import React, { useState } from 'react';
 import AlertDialogBox from '../../../../components/AlertDialogBox';
+import EventCard from '../../components/EventCard';
 import EventModal from '../../components/EventModal';
 
 ManageEvent.propTypes = {};
@@ -32,8 +25,6 @@ function ManageEvent(props) {
    const [modalData, setModalData] = useState({});
    //Hook
    const { isOpen, onOpen, onClose } = useDisclosure();
-   //Toast
-   const toast = useToast();
 
    return (
       <Stack direction={['column', 'row']} spacing='24px' minH='82vh'>

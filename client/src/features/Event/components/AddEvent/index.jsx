@@ -1,26 +1,20 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import * as Yup from 'yup';
-import { Formik } from 'formik';
-import 'flatpickr/dist/themes/material_green.css';
-import Flatpickr from 'react-flatpickr';
-
 import {
-   Box,
    Button,
-   Center,
    FormControl,
    FormErrorMessage,
    FormLabel,
    HStack,
    Input,
-   NumberInput,
-   NumberInputField,
-   Select,
    Stack,
-   useColorModeValue,
    Textarea,
+   useColorModeValue,
 } from '@chakra-ui/react';
+import 'flatpickr/dist/themes/material_green.css';
+import { Formik } from 'formik';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import Flatpickr from 'react-flatpickr';
+import * as Yup from 'yup';
 
 AddEvent.propTypes = {
    onClose: PropTypes.func,
@@ -110,7 +104,7 @@ function AddEvent(props) {
                            style={{ width: '180px' }}
                            data-enable-time
                            value={values.end}
-                           onChange={handleChange('end')}
+                           // onChange={handleChange('end')}
                            onChange={(value) => {
                               setFieldValue('end', value);
                            }}
