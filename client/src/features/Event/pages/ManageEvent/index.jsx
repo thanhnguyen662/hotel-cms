@@ -11,14 +11,13 @@ import {
    Stack,
    Text,
    useDisclosure,
-   VStack,
    useToast,
+   VStack,
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react';
-import AlertDialogBox from '../../../../components/AlertDialogBox';
+import React, { useEffect, useState } from 'react';
+import eventApi from '../../../../api/eventApi';
 import EventCard from '../../components/EventCard';
 import EventModal from '../../components/EventModal';
-import eventApi from '../../../../api/eventApi';
 
 ManageEvent.propTypes = {};
 
@@ -28,7 +27,6 @@ function ManageEvent(props) {
    const [eventData, setEventData] = useState([]);
    //Hook
    const { isOpen, onOpen, onClose } = useDisclosure();
-
 
    //Toast
    const toast = useToast();
@@ -74,7 +72,6 @@ function ManageEvent(props) {
       });
       return showToastNotification('Successful', `Edit success`, 'success');
    };
-
 
    return (
       <Stack direction={['column', 'row']} spacing='24px' minH='82vh'>
