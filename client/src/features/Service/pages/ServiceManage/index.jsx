@@ -20,16 +20,16 @@ import {
    useToast,
 } from '@chakra-ui/react';
 import { ChevronDownIcon, SearchIcon, AddIcon } from '@chakra-ui/icons';
-import FoodsModal from '../../components/Modal';
+import ServiceModal from '../../components/Modal';
 import ManageTable from '../../../../components/ManageTable';
-import restaurantApi from '../../../../api/restaurantApi';
+import serviceApi from '../../../../api/serviceApi';
 import AlertDialogBox from '../../../../components/AlertDialogBox';
 
-function ManageFoodsPage(props) {
+function ServiceManage(props) {
    //STATE
    const { isOpen, onOpen, onClose } = useDisclosure();
    const [modalData, setModalData] = useState({});
-   const [allFood, setAllFood] = useState([
+   const [allService, setAllService] = useState([
       {
          name: '',
          type: '',
@@ -56,15 +56,15 @@ function ManageFoodsPage(props) {
 
    //EFFECT
    useEffect(() => {
-      const getAllFood = async () => {
-         const getAllFoodRes = await restaurantApi.getAllFood(searchKeyword);
-         setAllFood(getAllFoodRes);
+      const getAllService = async () => {
+         const getAllServiceRes = await serviceApi.getAllService(searchKeyword);
+         setAllService(getAllServiceRes);
       };
-      getAllFood();
+      getAllService();
    }, [searchKeyword]);
 
    //MEMO
-   const data = useMemo(() => [...allFood], [allFood]);
+   const data = useMemo(() => [...allService], [allService]);
    const columns = useMemo(
       () => [
          {
@@ -73,7 +73,7 @@ function ManageFoodsPage(props) {
             Cell: (record) => (
                <Image
                   src={record.row.values.image}
-                  alt='food'
+                  alt='Service'
                   boxSize='140px'
                   fit='cover'
                   borderRadius='7px'
@@ -144,9 +144,9 @@ function ManageFoodsPage(props) {
    };
    //Delete
    const handleOnDelete = async () => {
-      const deleteFoodRes = await restaurantApi.deleteFood({ id: target.id });
-      if (deleteFoodRes.message === 'OK') {
-         setAllFood(allFood.filter((i) => i.id !== target.id));
+      const deleteServiceRes = await serviceApi.deleteFood({ id: target.id });
+      if (deleteServiceRes.message === 'OK') {
+         setAllService(allService.filter((i) => i.id !== target.id));
          return showToastNotification(
             'Successful',
             `Delete ${target.name} success`,
@@ -156,7 +156,7 @@ function ManageFoodsPage(props) {
    };
    //Add
    const handleAdd = (foodItem) => {
-      setAllFood([foodItem, ...allFood]);
+      setAllService([foodItem, ...allService]);
       onClose();
       return showToastNotification(
          'Successful',
@@ -167,7 +167,7 @@ function ManageFoodsPage(props) {
 
    //Edit
    const handleEdit = (data) => {
-      setAllFood((prev) => {
+      setAllService((prev) => {
          return [data, ...prev.filter((i) => i.id !== target.id)];
       });
       onClose();
@@ -238,7 +238,7 @@ function ManageFoodsPage(props) {
                <ManageTable data={data} columns={columns} />
             </VStack>
          </Box>
-         <FoodsModal
+         <ServiceModal
             isOpen={isOpen}
             modalData={modalData}
             onClose={onClose}
@@ -254,4 +254,4 @@ function ManageFoodsPage(props) {
    );
 }
 
-export default ManageFoodsPage;
+export default ServiceManage;

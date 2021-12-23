@@ -17,28 +17,35 @@ import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React from 'react';
 import * as Yup from 'yup';
-import restaurantApi from '../../../../api/restaurantApi';
+import serviceApi from '../../../../api/serviceApi';
 
-AddFoods.propTypes = {
+EditService.propTypes = {
    onClose: PropTypes.func,
-   handleAdd: PropTypes.func,
+   handleEdit: PropTypes.func,
 };
 
-function AddFoods(props) {
+function EditService(props) {
    //PROPS
-   const { onClose, handleAdd } = props;
+   const { onClose, modalData, handleEdit } = props;
 
    //YUP
    const validationSchema = Yup.object().shape({
-      name: Yup.string().required('Service name is required!'),
-      type: Yup.string().required('Service type is required!'),
+      name: Yup.string().required('Food type is required!'),
+      type: Yup.string().required('Food type is required!'),
       price: Yup.number().min(1).required('Minimum price is 1$'),
    });
 
    //FUNCTION
-   const handleAddFood = async (data) => {
-      const addFoodRes = await restaurantApi.addFood(data);
-      handleAdd(addFoodRes);
+   const handleEditService = async (data) => {
+      const dataDestructuring = {
+         id: modalData.id,
+         image: modalData.image,
+         name: data.name,
+         type: data.type,
+         price: parseInt(data.price),
+      };
+      const editServiceRes = await serviceApi.editService(dataDestructuring);
+      handleEdit(editServiceRes);
    };
 
    return (
@@ -49,12 +56,12 @@ function AddFoods(props) {
          bg={useColorModeValue('white', 'gray.700')}
       >
          <Formik
-            onSubmit={(values) => handleAddFood(values)}
+            onSubmit={(values) => handleEditService(values)}
             validationSchema={validationSchema}
             initialValues={{
-               name: '',
-               type: '',
-               price: 1,
+               name: modalData.name,
+               type: modalData.type,
+               price: modalData.price,
             }}
          >
             {({
@@ -73,7 +80,7 @@ function AddFoods(props) {
                      <FormLabel>Service name</FormLabel>
                      <Input
                         id='name'
-                        placeholder='Enter service name'
+                        placeholder='Enter food name'
                         value={values.name}
                         onChange={handleChange('name')}
                      />
@@ -86,7 +93,7 @@ function AddFoods(props) {
                      >
                         <FormLabel>Service type</FormLabel>
                         <Select
-                           placeholder='Select service type'
+                           placeholder='Select food type'
                            onChange={handleChange('type')}
                            value={values.type}
                         >
@@ -103,7 +110,7 @@ function AddFoods(props) {
                      >
                         <FormLabel>Price</FormLabel>
                         <NumberInput
-                           placeholder='Enter food price'
+                           placeholder='Enter service price'
                            id='price'
                            min={1}
                            onChange={handleChange('price')}
@@ -161,7 +168,7 @@ function AddFoods(props) {
                         }}
                         onClick={handleSubmit}
                      >
-                        Add
+                        Edit
                      </Button>
                   </Stack>
                </>
@@ -171,4 +178,4 @@ function AddFoods(props) {
    );
 }
 
-export default AddFoods;
+export default EditService;

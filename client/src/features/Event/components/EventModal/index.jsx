@@ -9,16 +9,19 @@ import {
    ModalCloseButton,
 } from '@chakra-ui/react';
 import AddEvent from '../AddEvent';
+import EditEvent from '../EditEvent';
 
 EventModal.propTypes = {
    isOpen: PropTypes.bool,
    onClose: PropTypes.func,
    modalData: PropTypes.object,
+   addNewEvent: PropTypes.func,
+   editEventProp: PropTypes.func,
 };
 
 function EventModal(props) {
    //PROPS
-   const { isOpen, onClose, modalData } = props;
+   const { isOpen, onClose, modalData, addNewEvent, editEventProp } = props;
 
    return (
       <>
@@ -29,9 +32,13 @@ function EventModal(props) {
                <ModalCloseButton />
                <ModalBody>
                   {modalData.modalType === 'Add' ? (
-                     <AddEvent onClose={onClose} />
+                     <AddEvent onClose={onClose} addNewEvent={addNewEvent} />
                   ) : (
-                     ''
+                     <EditEvent
+                        onClose={onClose}
+                        editEventData={modalData}
+                        editEventProp={editEventProp}
+                     />
                   )}
                   {/* {modalData.modalType === 'Add' ? (
                      <AddFoods onClose={onClose} handleAdd={handleAdd} />

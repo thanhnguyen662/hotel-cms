@@ -21,18 +21,18 @@ import {
    Textarea,
 } from '@chakra-ui/react';
 import eventApi from '../../../../api/eventApi';
-
-AddEvent.propTypes = {
+EditEvent.propTypes = {
    onClose: PropTypes.func,
-   addNewEvent: PropTypes.func,
+   editEventData: PropTypes.object,
+   editEventProp: PropTypes.func,
 };
 
-function AddEvent(props) {
+function EditEvent(props) {
    //STATE
    const [endLimit, setEndLimit] = useState(new Date());
    const [startLimit, setStartLimit] = useState(new Date());
    //PROPS
-   const { onClose, addNewEvent } = props;
+   const { onClose, editEventData, editEventProp } = props;
 
    //YUP
    const validationSchema = Yup.object().shape({
@@ -47,9 +47,14 @@ function AddEvent(props) {
    });
 
    //Function
-   const handleAddEvent = async (data) => {
-      const addEvent = await eventApi.addEvent(data);
-      addNewEvent(addEvent);
+   const handleEditEvent = async (data) => {
+      const dataDestructuring = {
+         ...editEventData,
+         ...data,
+      };
+      console.log(dataDestructuring);
+      const addEvent = await eventApi.editEvent(dataDestructuring);
+      editEventProp(addEvent);
       onClose();
    };
 
@@ -61,13 +66,13 @@ function AddEvent(props) {
          bg={useColorModeValue('white', 'gray.700')}
       >
          <Formik
-            onSubmit={(values) => handleAddEvent(values)}
+            onSubmit={(values) => handleEditEvent(values)}
             validationSchema={validationSchema}
             initialValues={{
-               name: '',
-               detail: '',
-               start: startLimit,
-               end: new Date(),
+               name: editEventData.name,
+               detail: editEventData.detail,
+               start: new Date(editEventData.start),
+               end: new Date(editEventData.end),
             }}
          >
             {({
@@ -181,7 +186,7 @@ function AddEvent(props) {
                         }}
                         onClick={handleSubmit}
                      >
-                        Add
+                        Edit
                      </Button>
                   </Stack>
                </>
@@ -191,4 +196,4 @@ function AddEvent(props) {
    );
 }
 
-export default AddEvent;
+export default EditEvent;

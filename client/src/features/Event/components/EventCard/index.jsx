@@ -8,14 +8,39 @@ import {
    Text,
    useColorModeValue,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BiEditAlt } from 'react-icons/bi';
 import { FaRegCalendarCheck, FaRegCalendarTimes } from 'react-icons/fa';
 import { RiDeleteBin5Line } from 'react-icons/ri';
+import PropTypes from 'prop-types';
+import eventApi from '../../../../api/eventApi';
+import AlertDialogBox from '../../../../components/AlertDialogBox';
 
-EventCard.propTypes = {};
+EventCard.propTypes = {
+   data: PropTypes.object,
+   deleteEventProp: PropTypes.object,
+   editEventModalProp: PropTypes.object,
+};
 
 function EventCard(props) {
+   //STATE
+   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+   //PROPS
+   const { data, deleteEventProp, editEventModalProp } = props;
+
+   //FUNCTION
+   const deleteEvent = async () => {
+      const deleteEventItem = await eventApi.deleteEvent(data);
+      deleteEventProp(data);
+   };
+
+   const editEvent = async () => {
+      editEventModalProp({
+         ...data,
+         title: 'Edit event',
+         modalType: 'Edit',
+      });
+   };
    return (
       <>
          <Box
@@ -33,7 +58,7 @@ function EventCard(props) {
                   fontSize='sm'
                   color={useColorModeValue('gray.600', 'gray.400')}
                >
-                  Mar 10, 2019
+                  {new Date(data.createdAt).toLocaleString()}
                </chakra.span>
                <HStack spacing='4px'>
                   <IconButton
@@ -43,6 +68,7 @@ function EventCard(props) {
                      aria-label='Edit'
                      icon={<BiEditAlt />}
                      size={'sm'}
+                     onClick={editEvent}
                   />
                   <IconButton
                      borderWidth='1px'
@@ -51,6 +77,7 @@ function EventCard(props) {
                      aria-label='Delete'
                      icon={<RiDeleteBin5Line />}
                      size={'sm'}
+                     onClick={() => setIsDeleteAlertOpen(true)}
                   />
                </HStack>
                {/* <Link
@@ -77,7 +104,7 @@ function EventCard(props) {
                   //     textDecor: 'underline',
                   //  }}
                >
-                  Accessibility tools for designers and developers
+                  {data.name}
                </Heading>
                <chakra.p
                   mt={2}
@@ -97,17 +124,15 @@ function EventCard(props) {
                      },
                   }}
                >
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Tempora expedita dicta totam aspernatur doloremque.Lorem ipsum
-                  dolor sit, amet consectetur adipisicing elit. Tempora expedita
+                  {data.detail}
                </chakra.p>
                <HStack spacing='10px'>
                   <FaRegCalendarCheck />
-                  <Text>Start at: 25h30-12/11/2021</Text>
+                  <Text>Start at: {new Date(data.start).toLocaleString()}</Text>
                </HStack>
                <HStack spacing='10px'>
                   <FaRegCalendarTimes />
-                  <Text>Ends at: 25h30-12/11/2021</Text>
+                  <Text>Ends at: {new Date(data.end).toLocaleString()}</Text>
                </HStack>
             </Box>
             <Flex justifyContent='space-between' alignItems='center' mt={4}>
@@ -139,6 +164,11 @@ function EventCard(props) {
                      </Flex> */}
             </Flex>
          </Box>
+         <AlertDialogBox
+            isDeleteAlertOpen={isDeleteAlertOpen}
+            setIsDeleteAlertOpen={setIsDeleteAlertOpen}
+            handleOnDelete={deleteEvent}
+         />
       </>
    );
 }

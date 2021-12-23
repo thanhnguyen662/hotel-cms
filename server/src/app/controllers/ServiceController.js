@@ -1,9 +1,9 @@
 const prisma = require("../models/prisma");
 
-class RestaurantController {
-  addFood = async (req, res, next) => {
+class ServiceController {
+  addService = async (req, res, next) => {
     try {
-      const newFood = await prisma.food.create({
+      const newService = await prisma.service.create({
         data: {
           name: req.body.name,
           type: req.body.type,
@@ -12,17 +12,17 @@ class RestaurantController {
             "https://yt3.ggpht.com/ytc/AKedOLRqKEWKVfmL7BFyuVQ_-60biQlXnOaYkX467CMO=s900-c-k-c0x00ffffff-no-rj",
         },
       });
-      return res.json(newFood);
+      return res.json(newService);
     } catch (error) {
       return next(error);
     }
   };
 
-  getAllFood = async (req, res, next) => {
+  getAllService = async (req, res, next) => {
     const name = req.query.name || undefined;
     const type = req.query.type === "all" ? undefined : req.query.type;
     try {
-      const foodList = await prisma.food.findMany({
+      const serviceList = await prisma.service.findMany({
         where: {
           AND: [
             {
@@ -37,15 +37,15 @@ class RestaurantController {
           ],
         },
       });
-      return res.json(foodList);
+      return res.json(serviceList);
     } catch (error) {
       return next(error);
     }
   };
 
-  editFood = async (req, res, next) => {
+  editService = async (req, res, next) => {
     try {
-      const food = await prisma.food.update({
+      const service = await prisma.service.update({
         where: { id: req.body.id },
         data: {
           name: req.body.name,
@@ -54,15 +54,15 @@ class RestaurantController {
           image: req.body.image,
         },
       });
-      return res.json(food);
+      return res.json(service);
     } catch (error) {
       return next(error);
     }
   };
 
-  delete = async (req, res, next) => {
+  deleteService = async (req, res, next) => {
     try {
-      await prisma.food.deleteMany({
+      await prisma.service.deleteMany({
         where: { id: req.body.id },
       });
       return res.json({ message: "OK" });
@@ -72,4 +72,4 @@ class RestaurantController {
   };
 }
 
-module.exports = new RestaurantController();
+module.exports = new ServiceController();
