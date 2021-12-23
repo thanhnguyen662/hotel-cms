@@ -9,20 +9,20 @@ function RoomStatistics(props) {
       <>
          <Flex justify='center' align='center' height='full' mx='10px'>
             <Box flex='1' align='center'>
-               <Box fontSize='0.8em'>SINGLE</Box>
-               <Box fontSize='1.5em' fontWeight='bold'>
+               <Box fontSize='0.7em'>SINGLE</Box>
+               <Box fontSize='1.2em' fontWeight='bold'>
                   5/17
                </Box>
             </Box>
             <Box flex='1' align='center'>
-               <Box fontSize='0.8em'>DOUBLE</Box>
-               <Box fontSize='1.5em' fontWeight='bold'>
+               <Box fontSize='0.7em'>DOUBLE</Box>
+               <Box fontSize='1.2em' fontWeight='bold'>
                   5/17
                </Box>
             </Box>
             <Box flex='1' align='center'>
-               <Box fontSize='0.8em'>VIP</Box>
-               <Box fontSize='1.5em' fontWeight='bold'>
+               <Box fontSize='0.7em'>VIP</Box>
+               <Box fontSize='1.2em' fontWeight='bold'>
                   5/17
                </Box>
             </Box>

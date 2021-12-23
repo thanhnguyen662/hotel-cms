@@ -1,25 +1,20 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import * as Yup from 'yup';
-import { Formik } from 'formik';
-import 'flatpickr/dist/themes/material_green.css';
-import Flatpickr from 'react-flatpickr';
 import {
-   Box,
    Button,
-   Center,
    FormControl,
    FormErrorMessage,
    FormLabel,
    HStack,
    Input,
-   NumberInput,
-   NumberInputField,
-   Select,
    Stack,
-   useColorModeValue,
    Textarea,
+   useColorModeValue,
 } from '@chakra-ui/react';
+import 'flatpickr/dist/themes/material_green.css';
+import { Formik } from 'formik';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import Flatpickr from 'react-flatpickr';
+import * as Yup from 'yup';
 import eventApi from '../../../../api/eventApi';
 
 AddEvent.propTypes = {
@@ -30,6 +25,7 @@ AddEvent.propTypes = {
 function AddEvent(props) {
    //STATE
    const [endLimit, setEndLimit] = useState(new Date());
+   // eslint-disable-next-line
    const [startLimit, setStartLimit] = useState(new Date());
    //PROPS
    const { onClose, addNewEvent } = props;

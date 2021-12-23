@@ -23,7 +23,11 @@ class RoomController {
             },
             include: {
                roomDetail: true,
-               statusOfRooms: true,
+               statusOfRooms: {
+                  include: {
+                     roomStatus: true,
+                  },
+               },
             },
          });
 

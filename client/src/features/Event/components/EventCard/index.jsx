@@ -8,11 +8,11 @@ import {
    Text,
    useColorModeValue,
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import { BiEditAlt } from 'react-icons/bi';
 import { FaRegCalendarCheck, FaRegCalendarTimes } from 'react-icons/fa';
 import { RiDeleteBin5Line } from 'react-icons/ri';
-import PropTypes from 'prop-types';
 import eventApi from '../../../../api/eventApi';
 import AlertDialogBox from '../../../../components/AlertDialogBox';
 
@@ -31,7 +31,7 @@ function EventCard(props) {
    //FUNCTION
    const deleteEvent = async () => {
       const deleteEventItem = await eventApi.deleteEvent(data);
-      deleteEventProp(data);
+      deleteEventProp(deleteEventItem);
    };
 
    const editEvent = async () => {
