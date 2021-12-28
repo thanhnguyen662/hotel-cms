@@ -6,9 +6,9 @@ const eventApi = {
       return axiosClient.post(url, data);
    },
 
-   getAllEvent: () => {
+   getAllEvent: (params) => {
       const url = '/event/getAll';
-      return axiosClient.get(url);
+      return axiosClient.get(url, { params });
    },
 
    deleteEvent: (data) => {

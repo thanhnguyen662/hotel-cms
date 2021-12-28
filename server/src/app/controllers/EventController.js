@@ -23,7 +23,15 @@ class EventController {
 
   getAllEvent = async (req, res, next) => {
     try {
-      const allEvent = await prisma.event.findMany();
+      const search = req.query.search || undefined;
+      const allEvent = await prisma.event.findMany({
+        where: {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+      });
       return res.json(allEvent);
     } catch (error) {
       return next(error);
@@ -33,7 +41,6 @@ class EventController {
   deleteEvent = async (req, res, next) => {
     try {
       const { id } = req.body;
-      console.log(id);
       const deleteItem = await prisma.event.delete({
         where: { id: id },
       });

@@ -14,7 +14,7 @@ import {
    useToast,
    VStack,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import eventApi from '../../../../api/eventApi';
 import EventCard from '../../components/EventCard';
 import EventModal from '../../components/EventModal';
@@ -25,6 +25,7 @@ function ManageEvent(props) {
    //STATE
    const [modalData, setModalData] = useState({});
    const [eventData, setEventData] = useState([]);
+   const [searchKeyword, setSearchKeyword] = useState({ search: '' });
    //Hook
    const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -33,11 +34,14 @@ function ManageEvent(props) {
    //EFFECT
    useEffect(() => {
       const getAll = async () => {
-         const getAllEvent = await eventApi.getAllEvent();
+         const getAllEvent = await eventApi.getAllEvent(searchKeyword);
          setEventData(getAllEvent);
       };
       getAll();
-   }, []);
+   }, [searchKeyword]);
+
+   //REF
+   const timeout = useRef(null);
 
    //FUNCTION
    //toast
@@ -72,6 +76,13 @@ function ManageEvent(props) {
       });
       return showToastNotification('Successful', `Edit success`, 'success');
    };
+   //search
+   const handleOnSearchChange = (searchData) => {
+      if (timeout.current) clearTimeout(timeout.current);
+      timeout.current = setTimeout(() => {
+         setSearchKeyword({ search: searchData });
+      }, 400);
+   };
 
    return (
       <Stack direction={['column', 'row']} spacing='24px' minH='82vh'>
@@ -89,9 +100,7 @@ function ManageEvent(props) {
                      />
                      <Input
                         placeholder='Search by event name'
-                        // onChange={(e) =>
-                        //    handleOnSearchChange(e.target.value, 'name')
-                        // }
+                        onChange={(e) => handleOnSearchChange(e.target.value)}
                      />
                   </InputGroup>
                   <Button
