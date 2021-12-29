@@ -70,6 +70,42 @@ class ServiceController {
       return next(error);
     }
   };
+
+  orderService = async (req, res, next) => {
+    try {
+      const orderId = parseInt(req.params.orderId);
+      const { name, tickets, start } = req.body;
+      console.log("orderId", orderId);
+      console.log(typeof orderId);
+      console.log(name);
+      console.log(tickets);
+      console.log(start);
+      return res.json({ message: "connect successfully" });
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  deleteOrderService = async (req, res, next) => {
+    try {
+      const oderServiceId = parseInt(req.query.oderServiceId);
+      console.log(oderServiceId);
+      console.log(typeof oderServiceId);
+      return res.json({ message: "Connect successfully" });
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  editOrderServiceService = async (req, res, next) => {
+    try {
+      const { test } = req.body;
+      console.log(test);
+      return res.json({ message: "Connect successfully" });
+    } catch (error) {
+      return next(error);
+    }
+  };
 }
 
 module.exports = new ServiceController();
