@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.get('/profile/user', userController.getUserProfile);
 router.get('/profile/my', userController.getMyProfile);
+router.post('/profile/customer', userController.getCustomerProfile);
 router.patch('/profile/edit', userController.editUserProfile);
 router.get('/manage/all', userController.manageAllUser);
 router.post('/delete', userController.delete);

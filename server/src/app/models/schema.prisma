@@ -18,7 +18,8 @@ model User {
   isDelete     Boolean? @default(false)
   role         Role?    @relation(fields: [roleId], references: [id])
   profile      Profile?
-  event        Event[] 
+  event        Event[]
+  orders       Order[]
 }
 
 model Profile {
@@ -44,6 +45,8 @@ model Room {
   roomDetail      RoomDetail?
   updateStatusdAt DateTime?
   statusOfRooms   StatusOfRoom[]
+  orderItems      OrderItem[]
+  // customerRooms   CustomerRoom[]
 }
 
 model RoomDetail {
@@ -85,21 +88,58 @@ model Sessions {
   updatedAt DateTime? @updatedAt
 }
 
-model Service{
-  id Int @id @unique @default(autoincrement())
-  name String
-  type String
-  price Int 
-  image String 
+model Service {
+  id    Int    @id @unique @default(autoincrement())
+  name  String
+  type  String
+  price Int
+  image String
 }
 
-model Event{
-  id Int @id @unique @default(autoincrement())
-  name String
-  start DateTime
-  end DateTime
-  detail String
+model OrderItem {
+  id                     Int                     @id @unique @default(autoincrement())
+  roomId                 Int?
+  room                   Room?                   @relation(fields: [roomId], references: [id])
+  orderId                Int?
+  order                  Order?                  @relation(fields: [orderId], references: [id])
+  price                  Float?
+  customerOrderItemRooms CustomerOrderItemRoom[]
+}
+
+model Order {
+  id             Int         @id @unique @default(autoincrement())
+  orderItems     OrderItem[]
+  totalPrice     Float?
+  receptionistId Int?
+  user           User?       @relation(fields: [receptionistId], references: [id])
+}
+
+model Customer {
+  id            Int                     @id @unique @default(autoincrement())
+  firstName     String?
+  lastName      String?
+  idCard        String?                 @unique
+  country       String?
+  phoneNumber   String?
+  dob           DateTime?
+  customerRooms CustomerOrderItemRoom[]
+}
+
+model CustomerOrderItemRoom {
+  id          Int        @id @unique @default(autoincrement())
+  customerId  Int?
+  customer    Customer?  @relation(fields: [customerId], references: [id])
+  orderItemId Int?
+  orderItem   OrderItem? @relation(fields: [orderItemId], references: [id])
+}
+
+model Event {
+  id        Int      @id @unique @default(autoincrement())
+  name      String
+  start     DateTime
+  end       DateTime
+  detail    String
   createdBy Int
-  user      User    @relation(fields: [createdBy], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user      User     @relation(fields: [createdBy], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt DateTime @default(now())
 }

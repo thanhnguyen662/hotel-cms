@@ -107,6 +107,34 @@ class UserController {
       }
    };
 
+   getCustomerProfile = async (req, res, next) => {
+      try {
+         const upsertUser = await prisma.customer.upsert({
+            where: {
+               idCard: req.body.idCard,
+            },
+            update: {
+               country: req.body.country,
+               dob: new Date(req.body.dob),
+               firstName: req.body.firstName,
+               lastName: req.body.lastName,
+               phoneNumber: req.body.phoneNumber,
+            },
+            create: {
+               country: req.body.country,
+               dob: new Date(req.body.dob),
+               firstName: req.body.firstName,
+               lastName: req.body.lastName,
+               phoneNumber: req.body.phoneNumber,
+               idCard: req.body.idCard,
+            },
+         });
+         return res.status(200).json(upsertUser);
+      } catch (error) {
+         return next(error);
+      }
+   };
+
    manageAllUser = async (req, res, next) => {
       const username = req.query.username || undefined;
       const role = req.query.role === 'all' ? undefined : req.query.role;

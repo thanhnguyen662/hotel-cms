@@ -45,6 +45,11 @@ const userApi = {
       const url = '/users/manage/all';
       return axiosClient.get(url, { params });
    },
+
+   customerProfile: (data) => {
+      const url = '/users/profile/customer';
+      return axiosClient.post(url, data);
+   },
 };
 
 export default userApi;

@@ -7,6 +7,7 @@ function Orders(props) {
       <>
          <Routes>
             <Route path='order' element={<OrderPage />} />
+            <Route path='order/:orderId' element={<OrderPage />} />
          </Routes>
       </>
    );
