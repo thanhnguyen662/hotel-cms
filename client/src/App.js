@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import '@fontsource/inter';
 import theme from './theme';
 import Routers from './routers';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfile } from './features/Auth/authSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 

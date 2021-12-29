@@ -55,9 +55,9 @@ function EventCard(props) {
             rounded='lg'
             shadow='lg'
             bg={cardColor}
-            _hover={{
-               eventCardButton: { zIndex: 1 },
-            }}
+            // _hover={{
+            //    eventCardButton: { zIndex: 1 },
+            // }}
          >
             <Flex justifyContent='space-between' alignItems='center'>
                <chakra.span
@@ -66,7 +66,7 @@ function EventCard(props) {
                >
                   {new Date(data.createdAt).toLocaleString()}
                </chakra.span>
-               <HStack spacing='4px' zIndex='-1' as='eventCardButton'>
+               <HStack spacing='4px'>
                   <IconButton
                      borderWidth='1px'
                      variant='outline'
@@ -93,10 +93,6 @@ function EventCard(props) {
                   fontSize='2xl'
                   color={useColorModeValue('gray.700', 'white')}
                   fontWeight='700'
-                  //  _hover={{
-                  //     color: useColorModeValue('gray.600', 'gray.200'),
-                  //     textDecor: 'underline',
-                  //  }}
                >
                   {data.name}
                </Heading>

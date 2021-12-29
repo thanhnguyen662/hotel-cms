@@ -7,7 +7,7 @@ import {
    Text,
    useColorModeValue,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
    FiCompass,
    FiHome,
@@ -18,6 +18,7 @@ import {
 import { MdRoomService } from 'react-icons/md';
 import { RiCalendarEventLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const LinkItems = [
    { name: 'Home', icon: FiHome, navigateTo: '/' },
@@ -88,6 +89,31 @@ const NavItem = ({ icon, children, navigateTo, ...rest }) => {
 };
 
 function SiderBar({ onClose, ...rest }) {
+   //current user role
+   const currentUserRole =
+      useSelector((state) => state.user?.role) || 'anonymous';
+   //STATE
+   const [linkFilter, setLinkFilter] = useState([]);
+   //EFFECT
+   useEffect(() => {
+      currentUserRole === 'admin' &&
+         setLinkFilter(LinkItems.filter((item) => item.name === 'Manage User'));
+      currentUserRole === 'receptionist' &&
+         setLinkFilter(LinkItems.filter((item) => item.name === 'Room'));
+      currentUserRole === 'serviceMg' &&
+         setLinkFilter(
+            LinkItems.filter(
+               (item) =>
+                  item.name === 'Manage service' ||
+                  item.name === 'Order service',
+            ),
+         );
+      currentUserRole === 'eventMg' &&
+         setLinkFilter(
+            LinkItems.filter((item) => item.name === 'Manage event'),
+         );
+   }, [currentUserRole]);
+
    return (
       <Box
          transition='3s ease'
@@ -113,8 +139,7 @@ function SiderBar({ onClose, ...rest }) {
                onClick={onClose}
             />
          </Flex>
-
-         {LinkItems.map((link) => (
+         {linkFilter?.map((link) => (
             <NavItem
                key={link.name}
                icon={link.icon}
