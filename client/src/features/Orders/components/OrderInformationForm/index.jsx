@@ -65,11 +65,12 @@ function OrderInformationForm(props) {
       array.push(item.number);
       return array;
    }, []);
+   console.log('roomInOrder: ', roomInOrder);
 
    const isOrderButtonDisabled = () => {
       let isDisabled = true;
       if (roomInOrder.length === 0) return (isDisabled = false);
-      roomInOrder?.map((item) => {
+      roomInOrder.map((item) => {
          // eslint-disable-next-line
          if (isDisabled === false) return;
          const isCustomerInRoom = customerOrderRoom.some(
@@ -83,6 +84,7 @@ function OrderInformationForm(props) {
       return isDisabled;
    };
    const isOrderDisabled = isOrderButtonDisabled();
+   // console.log('isOrderDisabled: ', isOrderDisabled);
 
    return (
       <Box bg='white' rounded='lg' boxShadow='xl' h='full'>

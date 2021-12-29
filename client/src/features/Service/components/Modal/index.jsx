@@ -10,6 +10,8 @@ import {
 } from '@chakra-ui/react';
 import AddService from '../AddService';
 import EditService from '../EditService';
+import OrderService from '../OrderService';
+import EditOrderService from '../EditOrderService';
 
 index.propTypes = {
    isOpen: PropTypes.bool,
@@ -17,11 +19,12 @@ index.propTypes = {
    onClose: PropTypes.func,
    handleAdd: PropTypes.func,
    handleEdit: PropTypes.func,
+   orderId: PropTypes.string,
 };
 
 function index(props) {
    //PROPS
-   const { isOpen, modalData, onClose, handleAdd, handleEdit } = props;
+   const { isOpen, modalData, onClose, handleAdd, handleEdit, orderId } = props;
 
    return (
       <>
@@ -31,13 +34,27 @@ function index(props) {
                <ModalHeader>{modalData.title}</ModalHeader>
                <ModalCloseButton />
                <ModalBody>
-                  {modalData.modalType === 'Add' ? (
+                  {modalData.modalType === 'Add' && (
                      <AddService onClose={onClose} handleAdd={handleAdd} />
-                  ) : (
+                  )}
+                  {modalData.modalType === 'Edit' && (
                      <EditService
                         onClose={onClose}
                         modalData={modalData}
                         handleEdit={handleEdit}
+                     />
+                  )}
+                  {modalData.modalType === 'Order' && (
+                     <OrderService
+                        onClose={onClose}
+                        modalData={modalData}
+                        orderId={orderId}
+                     />
+                  )}
+                  {modalData.modalType === 'EditOrder' && (
+                     <EditOrderService
+                        onClose={onClose}
+                        modalData={modalData}
                      />
                   )}
                </ModalBody>

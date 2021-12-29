@@ -4,46 +4,52 @@ import {
    FormControl,
    FormErrorMessage,
    FormLabel,
-   Input,
+   NumberInput,
+   NumberInputField,
+   Select,
    Stack,
-   Textarea,
    useColorModeValue,
 } from '@chakra-ui/react';
-import 'flatpickr/dist/themes/material_green.css';
 import { Formik } from 'formik';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Flatpickr from 'react-flatpickr';
 import * as Yup from 'yup';
-import eventApi from '../../../../api/eventApi';
-EditEvent.propTypes = {
-   onClose: PropTypes.func,
-   editEventData: PropTypes.object,
-   editEventProp: PropTypes.func,
+import serviceApi from '../../../../api/serviceApi';
+OrderService.propTypes = {
+   orderId: PropTypes.string,
 };
 
-function EditEvent(props) {
+function OrderService(props) {
    //PROPS
-   const { onClose, editEventData, editEventProp } = props;
+   const { onClose, orderId } = props;
+   const [serviceData, setServiceData] = useState([]);
+   //EFFECT
+   useEffect(() => {
+      const getService = async () => {
+         const getServiceRes = await serviceApi.getAllService();
+         setServiceData(getServiceRes);
+      };
+      getService();
+   }, []);
 
    //YUP
    const validationSchema = Yup.object().shape({
-      name: Yup.string().required('Event name is required!'),
-      detail: Yup.string().required('Event detail is required!'),
-      dateTime: Yup.array().required('Event time is required!'),
+      name: Yup.number().required('Service name is required!'),
+      tickets: Yup.number().required('Number of guests is required!'),
+      start: Yup.date().required('Time of service is required!'),
    });
 
    //Function
-   const handleEditEvent = async (data) => {
+   const handleOrder = async (data) => {
       const dataDestructuring = {
-         ...editEventData,
          ...data,
-         start: data.dateTime[0],
-         end: data.dateTime[1],
+         start: data.start[0],
+         orderId: orderId,
       };
-      const addEvent = await eventApi.editEvent(dataDestructuring);
-      editEventProp(addEvent);
+      const OrderRes = await serviceApi.oderService(dataDestructuring);
+      console.log(OrderRes);
       onClose();
    };
 
@@ -55,53 +61,74 @@ function EditEvent(props) {
          bg={useColorModeValue('white', 'gray.700')}
       >
          <Formik
-            onSubmit={(values) => handleEditEvent(values)}
+            onSubmit={(values) => handleOrder(values)}
             validationSchema={validationSchema}
             initialValues={{
-               name: editEventData.name,
-               detail: editEventData.detail,
-               dateTime: [editEventData.start, editEventData.end],
+               name: '',
+               tickets: 1,
+               start: new Date(),
             }}
          >
             {({
                handleChange,
                handleBlur,
                handleSubmit,
-               setFieldValue,
                values,
                errors,
                touched,
+               setFieldValue,
             }) => (
                <>
                   <FormControl
                      id='name'
                      isInvalid={errors.name && touched.name}
                   >
-                     <FormLabel>Event name</FormLabel>
-                     <Input
-                        id='name'
-                        placeholder='Enter event name'
-                        value={values.name}
-                        onChange={handleChange('name')}
-                     />
+                     <FormLabel>Service name</FormLabel>
+                     <Select
+                        placeholder='Select option'
+                        flex='1'
+                        defaultValue='all'
+                        onChange={(e) => setFieldValue('name', e.target.value)}
+                     >
+                        {serviceData?.map((item) => (
+                           <option key={item.id} value={item.id}>
+                              {item.name}
+                           </option>
+                        ))}
+                     </Select>
                      <FormErrorMessage>{errors.name}</FormErrorMessage>
                   </FormControl>
                   <FormControl
-                     id='dateTime'
-                     isInvalid={errors.dateTime && touched.dateTime}
+                     id='tickets'
+                     isInvalid={errors.tickets && touched.tickets}
                   >
-                     <FormLabel>Start at - End at</FormLabel>
+                     <FormLabel>Number of guests</FormLabel>
+                     <NumberInput
+                        placeholder='Enter number of guests'
+                        id='tickets'
+                        min={1}
+                        onChange={handleChange('tickets')}
+                        value={values.tickets}
+                     >
+                        <NumberInputField />
+                     </NumberInput>
+                     <FormErrorMessage>{errors.tickets}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl
+                     id='start'
+                     isInvalid={errors.start && touched.start}
+                  >
+                     <FormLabel>Start at</FormLabel>
                      <Box w='full' borderWidth='1px' borderRadius='lg'>
                         <Flatpickr
-                           id='dateTime'
+                           id='start'
                            onChange={(value) => {
-                              setFieldValue('dateTime', value);
+                              setFieldValue('start', value);
                            }}
                            options={{
                               minDate: moment().subtract(1, 'minute').toDate(),
                               enableTime: true,
-                              mode: 'range',
-                              defaultDate: values.dateTime,
+                              defaultDate: values.start,
                            }}
                            style={{
                               height: '100%',
@@ -112,21 +139,7 @@ function EditEvent(props) {
                            }}
                         ></Flatpickr>
                      </Box>
-                     <FormErrorMessage>{errors.dateTime}</FormErrorMessage>
-                  </FormControl>
-                  <FormControl
-                     id='detail'
-                     isInvalid={errors.detail && touched.detail}
-                  >
-                     <FormLabel>Detail</FormLabel>
-                     <Textarea
-                        value={values.detail}
-                        onChange={handleChange('detail')}
-                        placeholder='Enter event detail'
-                        size='sm'
-                        maxH='90px'
-                     />
-                     <FormErrorMessage>{errors.detail}</FormErrorMessage>
+                     <FormErrorMessage>{errors.start}</FormErrorMessage>
                   </FormControl>
                   <Stack
                      spacing={4}
@@ -157,7 +170,7 @@ function EditEvent(props) {
                         }}
                         onClick={handleSubmit}
                      >
-                        Edit
+                        Add
                      </Button>
                   </Stack>
                </>
@@ -167,4 +180,4 @@ function EditEvent(props) {
    );
 }
 
-export default EditEvent;
+export default OrderService;

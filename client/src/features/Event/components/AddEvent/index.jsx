@@ -1,9 +1,9 @@
 import {
+   Box,
    Button,
    FormControl,
    FormErrorMessage,
    FormLabel,
-   HStack,
    Input,
    Stack,
    Textarea,
@@ -11,12 +11,12 @@ import {
 } from '@chakra-ui/react';
 import 'flatpickr/dist/themes/material_green.css';
 import { Formik } from 'formik';
+import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import Flatpickr from 'react-flatpickr';
 import * as Yup from 'yup';
 import eventApi from '../../../../api/eventApi';
-
 
 AddEvent.propTypes = {
    onClose: PropTypes.func,
@@ -24,10 +24,6 @@ AddEvent.propTypes = {
 };
 
 function AddEvent(props) {
-   //STATE
-   const [endLimit, setEndLimit] = useState(new Date());
-   // eslint-disable-next-line
-   const [startLimit, setStartLimit] = useState(new Date());
    //PROPS
    const { onClose, addNewEvent } = props;
 
@@ -35,17 +31,18 @@ function AddEvent(props) {
    const validationSchema = Yup.object().shape({
       name: Yup.string().required('Event name is required!'),
       detail: Yup.string().required('Event detail is required!'),
-      start: Yup.date()
-         .min(startLimit, 'End date invalid')
-         .required('Start date invalid'),
-      end: Yup.date()
-         .min(endLimit, 'End date invalid')
-         .required('End date invalid'),
+      dateTime: Yup.array().required('Event time is required!'),
    });
 
    //Function
    const handleAddEvent = async (data) => {
-      const addEvent = await eventApi.addEvent(data);
+      const dataDestructuring = {
+         name: data.name,
+         detail: data.detail,
+         start: data.dateTime[0],
+         end: data.dateTime[1],
+      };
+      const addEvent = await eventApi.addEvent(dataDestructuring);
       addNewEvent(addEvent);
       onClose();
    };
@@ -63,8 +60,7 @@ function AddEvent(props) {
             initialValues={{
                name: '',
                detail: '',
-               start: startLimit,
-               end: new Date(),
+               dateTime: [moment().toDate(), moment().add(1, 'hour').toDate()],
             }}
          >
             {({
@@ -90,51 +86,34 @@ function AddEvent(props) {
                      />
                      <FormErrorMessage>{errors.name}</FormErrorMessage>
                   </FormControl>
-                  <HStack spacing='6'>
-                     <FormControl
-                        id='start'
-                        isInvalid={errors.start && touched.start}
-                     >
-                        <FormLabel>Start At</FormLabel>
+                  <FormControl
+                     id='dateTime'
+                     isInvalid={errors.dateTime && touched.dateTime}
+                  >
+                     <FormLabel>Start at - End at</FormLabel>
+                     <Box w='full' borderWidth='1px' borderRadius='lg'>
                         <Flatpickr
+                           id='dateTime'
+                           onChange={(value) => {
+                              setFieldValue('dateTime', value);
+                           }}
+                           options={{
+                              minDate: moment().subtract(1, 'minute').toDate(),
+                              enableTime: true,
+                              mode: 'range',
+                              defaultDate: values.dateTime,
+                           }}
                            style={{
-                              width: '180px',
-                              border: '1px solid',
-                              borderRadius: '5px',
+                              height: '100%',
+                              borderRadius: '8px',
+                              padding: '9.5px 5px',
+                              width: '100%',
                               borderColor: 'gray',
                            }}
-                           options={{ minDate: startLimit }}
-                           data-enable-time
-                           value={values.start}
-                           onChange={(value) => {
-                              setFieldValue('start', value[0]);
-                              value.length && setEndLimit(new Date(value));
-                           }}
-                        />
-                        <FormErrorMessage>{errors.start}</FormErrorMessage>
-                     </FormControl>
-                     <FormControl
-                        id='end'
-                        isInvalid={errors.end && touched.end}
-                     >
-                        <FormLabel>Ends At</FormLabel>
-                        <Flatpickr
-                           options={{ minDate: endLimit }}
-                           style={{
-                              width: '180px',
-                              border: '1px solid',
-                              borderRadius: '5px',
-                              borderColor: 'gray',
-                           }}
-                           data-enable-time
-                           value={values.end}
-                           onChange={(value) => {
-                              setFieldValue('end', value[0]);
-                           }}
-                        />
-                        <FormErrorMessage>{errors.end}</FormErrorMessage>
-                     </FormControl>
-                  </HStack>
+                        ></Flatpickr>
+                     </Box>
+                     <FormErrorMessage>{errors.dateTime}</FormErrorMessage>
+                  </FormControl>
                   <FormControl
                      id='detail'
                      isInvalid={errors.detail && touched.detail}

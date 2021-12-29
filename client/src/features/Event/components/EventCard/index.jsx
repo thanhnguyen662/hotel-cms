@@ -18,7 +18,7 @@ import AlertDialogBox from '../../../../components/AlertDialogBox';
 
 EventCard.propTypes = {
    data: PropTypes.object,
-   deleteEventProp: PropTypes.object,
+   deleteEventProp: PropTypes.func,
    editEventModalProp: PropTypes.object,
 };
 
@@ -27,10 +27,12 @@ function EventCard(props) {
    const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
    //PROPS
    const { data, deleteEventProp, editEventModalProp } = props;
-
+   //CSS variable
+   const cardColor = useColorModeValue('white', 'gray.800');
    //FUNCTION
    const deleteEvent = async () => {
       const deleteEventItem = await eventApi.deleteEvent(data);
+      setIsDeleteAlertOpen(false);
       deleteEventProp(deleteEventItem);
    };
 
@@ -49,9 +51,13 @@ function EventCard(props) {
             w='350px'
             px={8}
             py={4}
+            mb='10px'
             rounded='lg'
             shadow='lg'
-            bg={useColorModeValue('white', 'gray.800')}
+            bg={cardColor}
+            _hover={{
+               eventCardButton: { zIndex: 1 },
+            }}
          >
             <Flex justifyContent='space-between' alignItems='center'>
                <chakra.span
@@ -60,7 +66,7 @@ function EventCard(props) {
                >
                   {new Date(data.createdAt).toLocaleString()}
                </chakra.span>
-               <HStack spacing='4px'>
+               <HStack spacing='4px' zIndex='-1' as='eventCardButton'>
                   <IconButton
                      borderWidth='1px'
                      variant='outline'
@@ -80,18 +86,6 @@ function EventCard(props) {
                      onClick={() => setIsDeleteAlertOpen(true)}
                   />
                </HStack>
-               {/* <Link
-                        px={3}
-                        py={1}
-                        bg='gray.600'
-                        color='gray.100'
-                        fontSize='sm'
-                        fontWeight='700'
-                        rounded='md'
-                        _hover={{ bg: 'gray.500' }}
-                     >
-                        Design
-                     </Link> */}
             </Flex>
 
             <Box mt={2}>
@@ -135,34 +129,6 @@ function EventCard(props) {
                   <Text>Ends at: {new Date(data.end).toLocaleString()}</Text>
                </HStack>
             </Box>
-            <Flex justifyContent='space-between' alignItems='center' mt={4}>
-               {/* <Text
-                        color={useColorModeValue('brand.600', 'brand.400')}
-                        _hover={{ textDecor: 'underline' }}
-                     >
-                        Read more
-                     </Text> */}
-
-               {/* <Flex alignItems='center'>
-                        <Image
-                           mx={4}
-                           w={10}
-                           h={10}
-                           rounded='full'
-                           fit='cover'
-                           display={{ base: 'none', sm: 'block' }}
-                           src='https://images.unsplash.com/photo-1502980426475-b83966705988?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=40&q=80'
-                           alt='avatar'
-                        />
-                        <Link
-                           color={useColorModeValue('gray.700', 'gray.200')}
-                           fontWeight='700'
-                           cursor='pointer'
-                        >
-                           Khatab wedaa
-                        </Link>
-                     </Flex> */}
-            </Flex>
          </Box>
          <AlertDialogBox
             isDeleteAlertOpen={isDeleteAlertOpen}

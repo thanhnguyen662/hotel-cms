@@ -144,9 +144,12 @@ function ServiceManage(props) {
    };
    //Delete
    const handleOnDelete = async () => {
-      const deleteServiceRes = await serviceApi.deleteFood({ id: target.id });
+      const deleteServiceRes = await serviceApi.deleteService({
+         id: target.id,
+      });
       if (deleteServiceRes.message === 'OK') {
          setAllService(allService.filter((i) => i.id !== target.id));
+         setIsDeleteAlertOpen(false);
          return showToastNotification(
             'Successful',
             `Delete ${target.name} success`,

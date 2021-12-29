@@ -6,14 +6,14 @@ const eventApi = {
       return axiosClient.post(url, data);
    },
 
-   getAllEvent: () => {
+   getAllEvent: (params) => {
       const url = '/event/getAll';
-      return axiosClient.get(url);
+      return axiosClient.get(url, { params });
    },
 
    deleteEvent: (data) => {
       const url = '/event/delete';
-      return axiosClient.delete(url, data);
+      return axiosClient.delete(url, { data });
    },
 
    editEvent: (data) => {

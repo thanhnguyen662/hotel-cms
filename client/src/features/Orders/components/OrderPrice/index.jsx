@@ -196,7 +196,8 @@ function OrderPrice(props) {
                   borderRadius: '24px',
                },
             }}
-            maxH='290px'
+            h='290px'
+            // minH=''
          >
             <ManageTable data={customerData} columns={customerColumns} />
          </Box>
