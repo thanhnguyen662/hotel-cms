@@ -67,7 +67,8 @@ const EditForm = (props) => {
                         <option value='user'>User</option>
                         <option value='receptionist'>Receptionist</option>
                         <option value='housekeeper'>Housekeeper</option>
-                        <option value='restaurantMG'>RestaurantMG</option>
+                        <option value='serviceMg'>Service Manager</option>
+                        <option value='eventMg'>Event Manager</option>
                      </Select>
                   </FormControl>
                   <HStack spacing='6'>

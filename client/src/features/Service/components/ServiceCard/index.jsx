@@ -40,9 +40,9 @@ function ServiceCard(props) {
          borderRadius='md'
          boxShadow='xl'
          position='relative'
-         _hover={{
-            serviceCardButton: { zIndex: 3 },
-         }}
+         // _hover={{
+         //    ServiceCardButton: { zIndex: 3 },
+         // }}
       >
          <VStack>
             <Image
@@ -66,11 +66,11 @@ function ServiceCard(props) {
          <VStack>
             <HStack
                spacing='4px'
-               as='serviceCardButton'
+               // as='ServiceCardButton'
                position='absolute'
                top='0'
                left='127px'
-               zIndex='-1'
+               // zIndex='-1'
                p='10px'
             >
                <IconButton

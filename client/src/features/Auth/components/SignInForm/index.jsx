@@ -17,6 +17,7 @@ import {
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 
 SignInForm.propTypes = {
@@ -31,7 +32,7 @@ SignInForm.defaultProps = {
 
 function SignInForm(props) {
    const { onSignInFormSubmit, isAlert } = props;
-
+   const navigate = useNavigate();
    const initialValues = {
       username: '',
       password: '',
@@ -126,6 +127,19 @@ function SignInForm(props) {
                               >
                                  Sign in
                               </Button>
+                              <Stack pt={6}>
+                                 <Text align={'center'}>
+                                    Don't have any account?{' '}
+                                    <Link
+                                       color={'blue.400'}
+                                       onClick={() =>
+                                          navigate('/account/register')
+                                       }
+                                    >
+                                       Register
+                                    </Link>
+                                 </Text>
+                              </Stack>
                            </>
                         )}
                      </Formik>

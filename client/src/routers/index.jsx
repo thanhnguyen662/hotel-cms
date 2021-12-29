@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Auth from '../features/Auth';
 import Home from '../features/Home';
 import Users from '../features/Users';
@@ -9,13 +9,21 @@ import MainLayout from '../layouts/Main';
 import Service from '../features/Service';
 import Event from '../features/Event';
 import Orders from '../features/Orders';
+import { useSelector } from 'react-redux';
 
 function Routers(props) {
    return (
       <>
          <Routes>
             <Route path='account/*' element={<Auth />} />
-            <Route path='/' element={<MainLayout />}>
+            <Route
+               path='/'
+               element={
+                  <Protected>
+                     <MainLayout />
+                  </Protected>
+               }
+            >
                <Route path='users/*' element={<Users />} />
                <Route path='orders/*' element={<Orders />} />
                <Route path='rooms/*' element={<Rooms />} />
@@ -27,6 +35,19 @@ function Routers(props) {
          </Routes>
       </>
    );
+}
+
+function Protected({ children }) {
+   const navigate = useNavigate();
+   let num = useRef(0);
+   num.current = num.current + 1;
+   const userRole = useSelector((state) => state.user?.role) || 'anonymous';
+   console.log(userRole);
+   if (userRole === 'anonymous' && num.current === 2) {
+      console.log('IN');
+      return navigate('/account/login');
+   }
+   return children;
 }
 
 export default Routers;
