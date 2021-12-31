@@ -30,6 +30,7 @@ function OrderDetailModal(props) {
    const navigate = useNavigate();
    const { orderId } = useParams();
    const [orderData, setOrderData] = useState([]);
+   const [totalServicePrice, setTotalServicePrice] = useState(0);
 
    useEffect(() => {
       const getOrderInDb = async () => {
@@ -37,7 +38,24 @@ function OrderDetailModal(props) {
             const response = await orderApi.getOrderById({
                orderId: orderId,
             });
+            console.log('response: ', response);
             setOrderData(response);
+
+            /////////////
+            setTotalServicePrice((pre) => {
+               const calculator = response.orderItems?.reduce((total, item) => {
+                  const servicePrice = item.serviceHistories?.reduce(
+                     (num, i) => {
+                        return (num += i.service.price * i.tickets);
+                     },
+                     0,
+                  );
+
+                  return (total += servicePrice);
+               }, 0);
+
+               return calculator;
+            });
          } catch (error) {
             console.log(error);
          }
@@ -45,23 +63,66 @@ function OrderDetailModal(props) {
       getOrderInDb();
    }, [orderId]);
 
+   const onClickCheckoutButton = async () => {
+      try {
+         const updateRoomStatus = orderData.orderItems.reduce((array, item) => {
+            array.push(item.roomId);
+            return array;
+         }, []);
+
+         const response = await orderApi.checkout({
+            orderId,
+            totalServicePrice,
+            totalRoomPrice: orderData.totalPrice,
+            updateRoomStatus,
+         });
+
+         if (response.message === 'checkout_success') return navigate(-1);
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
    return (
       <Modal
          isOpen={location.state?.backgroundLocation ? true : false}
          onClose={() => navigate(-1)}
+         scrollBehavior={'inside'}
+         size='lg'
       >
          <ModalOverlay />
          <ModalContent>
             <ModalHeader>Order {orderData?.id} Detail</ModalHeader>
             <ModalCloseButton />
-            <ModalBody>
+            <ModalBody
+               css={{
+                  '&::-webkit-scrollbar': {
+                     width: '3px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                     width: '6px',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                     background: '#ADAFC6',
+                     borderRadius: '24px',
+                  },
+               }}
+            >
                {Object.keys(orderData).length !== 0 && (
-                  <ModalMainContent orderData={orderData} />
+                  <ModalMainContent
+                     orderData={orderData}
+                     totalServicePrice={totalServicePrice}
+                  />
                )}
             </ModalBody>
 
             <ModalFooter>
-               <Button colorScheme='red' w='full'>
+               <Button
+                  colorScheme='red'
+                  w='full'
+                  onClick={onClickCheckoutButton}
+                  disabled={orderData.isComplete}
+               >
                   Payment
                </Button>
             </ModalFooter>
@@ -71,14 +132,10 @@ function OrderDetailModal(props) {
 }
 
 const ModalMainContent = (props) => {
-   const { orderData } = props;
+   const { orderData, totalServicePrice } = props;
 
    const columns = useMemo(
       () => [
-         {
-            Header: 'id',
-            accessor: 'id',
-         },
          {
             Header: 'Name',
             Cell: (record) => {
@@ -98,6 +155,43 @@ const ModalMainContent = (props) => {
       ],
       [],
    );
+
+   const serviceColumns = useMemo(
+      () => [
+         {
+            Header: 'Service',
+            accessor: 'service.name',
+         },
+         {
+            Header: 'Tickets',
+            accessor: 'tickets',
+         },
+         {
+            Header: 'Price',
+            accessor: 'service.price',
+            Cell: (record) => {
+               return <Text>{priceFormat(record.value)}</Text>;
+            },
+         },
+         {
+            Header: 'Served',
+            accessor: 'servedAt',
+            width: 500,
+            Cell: (record) => {
+               return <Text>{moment(record.value).format('YYYY-MM-DD')}</Text>;
+            },
+         },
+      ],
+      [],
+   );
+
+   const calculatorAmount = (serviceList) => {
+      const amount = serviceList?.reduce((num, i) => {
+         return (num += i.service.price * i.tickets);
+      }, 0);
+
+      return amount;
+   };
 
    return (
       <VStack spacing='3'>
@@ -126,15 +220,15 @@ const ModalMainContent = (props) => {
             <VStack spacing='2' w='full'>
                {orderData.orderItems.map((i) => (
                   <Box key={i.id} w='full'>
-                     <HStack m='2' spacing='5px'>
-                        <Text> {i.room.number}</Text>
-                        <Text>
-                           | {priceFormat(i.room.roomDetail.price)}/ day
-                        </Text>
+                     <Divider mt='1' />
+                     <Text fontWeight='bold' m='2' mt='3' fontSize='lg'>
+                        Room {i.room.number}
+                     </Text>
+                     <HStack m='2' spacing='5px' fontSize='sm'>
+                        <Text>{priceFormat(i.room.roomDetail.price)}/ day</Text>
                         <Spacer />
-                        <Text fontWeight='bold' color='red.500'>
-                           {' '}
-                           {priceFormat(i.price)}
+                        <Text color='red.500'>
+                           Room Total: {priceFormat(i.price)}
                         </Text>
                      </HStack>
 
@@ -142,6 +236,21 @@ const ModalMainContent = (props) => {
                         <ManageTable
                            data={i.customerOrderItemRooms}
                            columns={columns}
+                        />
+                     </Box>
+
+                     <HStack m='2' mb='0' spacing='5px' fontSize='sm'>
+                        <Spacer />
+                        <Text color='red.500'>
+                           Service Total:{' '}
+                           {priceFormat(calculatorAmount(i.serviceHistories))}
+                        </Text>
+                     </HStack>
+
+                     <Box borderWidth='1px' rounded='lg' mt='2'>
+                        <ManageTable
+                           data={i.serviceHistories}
+                           columns={serviceColumns}
                         />
                      </Box>
                   </Box>
@@ -158,8 +267,9 @@ const ModalMainContent = (props) => {
                   hours
                </Box>
                <Spacer />
-               <Box fontWeight='bold' fontSize='17px' color='red.500'>
-                  Total Price: {priceFormat(orderData.totalPrice)}
+               <Box fontWeight='bold' fontSize='lg' color='red.500'>
+                  Total Price:{' '}
+                  {priceFormat(orderData.totalPrice + totalServicePrice)}
                </Box>
             </HStack>
          </Box>

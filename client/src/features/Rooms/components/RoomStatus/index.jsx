@@ -1,4 +1,4 @@
-import { Badge, Box, VStack } from '@chakra-ui/react';
+import { Badge, Box, Image, VStack } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 // import PropTypes from 'prop-types';
 import priceFormat from '../../../../utils/PriceFormat';
@@ -35,10 +35,10 @@ function RoomStatus(props) {
             rounded='lg'
             w='100%'
          >
-            {/* <Image
+            <Image
                src={selectedRoom?.roomDetail?.img[0]}
-               style={{ width: '100%', height: '100px', objectFit: 'cover' }}
-            /> */}
+               style={{ width: '100%', height: '120px', objectFit: 'cover' }}
+            />
 
             <Box p='4'>
                <Box display='flex' alignItems='baseline'>

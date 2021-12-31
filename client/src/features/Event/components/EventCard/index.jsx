@@ -19,7 +19,7 @@ import AlertDialogBox from '../../../../components/AlertDialogBox';
 EventCard.propTypes = {
    data: PropTypes.object,
    deleteEventProp: PropTypes.func,
-   editEventModalProp: PropTypes.object,
+   editEventModalProp: PropTypes.func,
 };
 
 function EventCard(props) {

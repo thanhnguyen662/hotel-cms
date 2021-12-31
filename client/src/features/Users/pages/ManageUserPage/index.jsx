@@ -167,7 +167,9 @@ function ManageUserPage(props) {
                >
                   <option value='all'>All</option>
                   <option value='admin'>Admin</option>
-                  <option value='user'>User</option>
+                  <option value='housekeeper'>Housekeeper</option>
+                  <option value='serviceMg'>Service</option>
+                  <option value='eventMg'>Event</option>
                </Select>
                <InputGroup flex='2'>
                   <InputLeftElement

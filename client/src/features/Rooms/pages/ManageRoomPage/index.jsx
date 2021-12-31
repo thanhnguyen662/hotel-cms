@@ -16,7 +16,7 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import roomApi from '../../../../api/roomApi';
 import FloorBar from '../../components/FloorBar';
 import RoomDiagram from '../../components/RoomDiagram';
-import RoomStatistics from '../../components/RoomStatistics';
+// import RoomStatistics from '../../components/RoomStatistics';
 import RoomStatus from '../../components/RoomStatus';
 import RoomTempPrice from '../../components/RoomTempPrice';
 import RoomToolBar from '../../components/RoomToolBar';
@@ -133,7 +133,7 @@ function ManageRoomPage(props) {
          </Box>
          <Box flex='1'>
             <VStack spacing='20px' height='full'>
-               <Box
+               {/* <Box
                   bg='white'
                   boxShadow='xl'
                   rounded='lg'
@@ -142,7 +142,7 @@ function ManageRoomPage(props) {
                   flex='1'
                >
                   <RoomStatistics />
-               </Box>
+               </Box> */}
                <Box width='full' flex='1'>
                   <RoomStatus selectedRoom={selectedRoom} />
                </Box>

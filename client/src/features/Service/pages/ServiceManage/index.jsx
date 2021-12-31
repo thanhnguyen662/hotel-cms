@@ -24,6 +24,7 @@ import ServiceModal from '../../components/ServiceModal';
 import ManageTable from '../../../../components/ManageTable';
 import serviceApi from '../../../../api/serviceApi';
 import AlertDialogBox from '../../../../components/AlertDialogBox';
+import priceFormat from '../../../../utils/PriceFormat';
 
 function ServiceManage(props) {
    //STATE
@@ -87,6 +88,7 @@ function ServiceManage(props) {
          {
             Header: 'Price($)',
             accessor: 'price',
+            Cell: (record) => <Text>{priceFormat(record.value)}</Text>,
          },
          {
             Header: 'Type',

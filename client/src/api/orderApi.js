@@ -23,8 +23,12 @@ const orderApi = {
 
    getOrderById: (params) => {
       const url = '/orders/order';
-
       return axiosClient.get(url, { params });
+   },
+
+   checkout: (data) => {
+      const url = '/orders/order/checkout';
+      return axiosClient.post(url, data);
    },
 };
 

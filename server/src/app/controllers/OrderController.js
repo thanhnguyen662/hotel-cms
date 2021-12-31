@@ -9,7 +9,7 @@ class OrderController {
          const customerOrderRoom = req.body.customerOrderRoom;
          const receptionistId = req.body.receptionistId;
          const rangeOrderDate = req.body.rangeOrderDate;
-     
+
          const prepareRoomData = roomData.reduce((array, item) => {
             array.push({
                roomId: Number(item.id),
@@ -146,6 +146,12 @@ class OrderController {
                            statusOfRooms: true,
                         },
                      },
+                     serviceHistories: {
+                        include: {
+                           service: true,
+                           oderItem: true,
+                        },
+                     },
                   },
                },
             },
@@ -155,21 +161,17 @@ class OrderController {
          return next(error);
       }
    };
-  
-  allUnpaidOrderItem = async (req, res, next) => {
+
+   allUnpaidOrderItem = async (req, res, next) => {
       try {
          const searchData = parseInt(req.query.search) || undefined;
          const getAll = await prisma.orderItem.findMany({
             where: {
                room: {
                   number: searchData,
-                  statusOfRooms: {
-                     some: {
-                        roomStatus: {
-                           code: 'OCC',
-                        },
-                     },
-                  },
+               },
+               order: {
+                  isComplete: false,
                },
             },
             include: {
@@ -219,7 +221,51 @@ class OrderController {
          return next(error);
       }
    };
+
+   checkout = async (req, res, next) => {
+      try {
+         await prisma.order.update({
+            where: {
+               id: Number(req.body.orderId),
+            },
+            data: {
+               isComplete: true,
+               servicePrice: parseFloat(req.body.totalServicePrice),
+               finalPrice:
+                  parseFloat(req.body.totalServicePrice) +
+                  parseFloat(req.body.totalRoomPrice),
+            },
+         });
+
+         const updateRoomPromise = req.body.updateRoomStatus.map(async (i) => {
+            const updateRoomStatus = await prisma.statusOfRoom.updateMany({
+               where: {
+                  AND: [
+                     {
+                        roleId: 4,
+                     },
+                     {
+                        roomId: Number(i),
+                     },
+                  ],
+               },
+               data: {
+                  roomStatusId: 7,
+               },
+            });
+
+            return updateRoomStatus;
+         });
+
+         const result = await Promise.all(updateRoomPromise);
+
+         return res
+            .status(200)
+            .json({ ...result, message: 'checkout_success' });
+      } catch (error) {
+         return next(error);
+      }
+   };
 }
 
 module.exports = new OrderController();
-  

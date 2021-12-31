@@ -61,7 +61,7 @@ function OrderPage(props) {
             receptionistId: currentUserId,
             rangeOrderDate,
          });
-         if (response.message === 'create_order_success') navigate('/');
+         if (response.message === 'create_order_success') navigate('/checkout');
       } catch (error) {
          console.log(error);
       }

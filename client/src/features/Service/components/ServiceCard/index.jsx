@@ -33,7 +33,7 @@ function ServiceCard(props) {
    //UI hook
    const { isOpen, onOpen, onClose } = useDisclosure();
    //CSS variable
-   const cardColor = '#6F71AD';
+   const cardColor = 'white';
    //Function
    const handleDelete = async () => {
       const handleDeleteRes = await serviceApi.deleteOrderService({
@@ -46,31 +46,34 @@ function ServiceCard(props) {
    return (
       <Box
          w='full'
-         p={'10px'}
+         px={'14px'}
+         py={'14px'}
          bg={cardColor}
-         borderRadius='md'
-         boxShadow='xl'
+         borderRadius='lg'
+         // boxShadow='xl'
          position='relative'
+         borderWidth='2px'
          // _hover={{
          //    ServiceCardButton: { zIndex: 3 },
          // }}
       >
-         <VStack>
+         <VStack spacing='1'>
             <Image
-               borderRadius='md'
+               borderRadius='lg'
                w='full'
                h='150px'
+               mb='1'
                objectFit='cover'
                src={serviceCardData.service.image}
                alt='Service'
             />
-            <Text w='full' isTruncated>
+            <Text w='full' isTruncated fontWeight='bold' fontSize='md'>
                {serviceCardData.service.name}
             </Text>
-            <Text w='full' isTruncated>
+            <Text w='full' isTruncated fontSize='sm'>
                Serve for: {serviceCardData.tickets}
             </Text>
-            <Text w='full' isTruncated>
+            <Text w='full' isTruncated fontSize='sm'>
                At: {new Date(serviceCardData.servedAt).toLocaleString()}
             </Text>
          </VStack>

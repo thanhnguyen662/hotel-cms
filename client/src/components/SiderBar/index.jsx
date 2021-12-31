@@ -109,10 +109,7 @@ function SiderBar({ onClose, ...rest }) {
       currentUserRole === 'receptionist' &&
          setLinkFilter(
             LinkItems.filter(
-               (item) =>
-                  item.name === 'Room' ||
-                  item.name === 'Housekeeper' ||
-                  item.name === 'Checkout',
+               (item) => item.name === 'Room' || item.name === 'Checkout',
             ),
          );
       currentUserRole === 'serviceMg' &&
