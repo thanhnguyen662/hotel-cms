@@ -38,16 +38,17 @@ function Room(props) {
          >
             <Heading size='lg'>{roomNumber}</Heading>
          </Button>
+
          <Button
             height='38px'
-            w='full'
-            rightIcon={<SmallAddIcon />}
+            leftIcon={<SmallAddIcon />}
             variant={isSelected ? 'solid' : 'outline'}
             colorScheme={color}
             isDisabled={isDisabled}
             onClick={() => onClickAdd(room)}
+            w='full'
          >
-            Add room
+            Select
          </Button>
       </VStack>
    );

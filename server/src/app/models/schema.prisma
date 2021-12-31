@@ -43,7 +43,7 @@ model Room {
   number          Int?
   floor           Int?
   roomDetail      RoomDetail?
-  updateStatusdAt DateTime?
+  updateStatusdAt DateTime?      @updatedAt
   statusOfRooms   StatusOfRoom[]
   orderItems      OrderItem[]
   // customerRooms   CustomerRoom[]
@@ -114,6 +114,9 @@ model Order {
   totalPrice     Float?
   receptionistId Int?
   user           User?       @relation(fields: [receptionistId], references: [id])
+  isComplete     Boolean?    @default(false)
+  startDate      DateTime?
+  endDate        DateTime?
 }
 
 model Customer {

@@ -59,6 +59,7 @@ function OrderPage(props) {
             totalOrderPrice,
             roomData: state?.data,
             receptionistId: currentUserId,
+            rangeOrderDate,
          });
          if (response.message === 'create_order_success') navigate('/');
       } catch (error) {

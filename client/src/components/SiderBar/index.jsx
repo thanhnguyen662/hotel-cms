@@ -14,6 +14,7 @@ import {
    FiSettings,
    FiStar,
    FiTrendingUp,
+   FiInbox,
 } from 'react-icons/fi';
 import { MdRoomService } from 'react-icons/md';
 import { RiCalendarEventLine } from 'react-icons/ri';
@@ -28,8 +29,6 @@ const LinkItems = [
       icon: FiCompass,
       navigateTo: '/rooms/manage/101',
    },
-   { name: 'Favourites', icon: FiStar, navigateTo: '/' },
-   { name: 'Settings', icon: FiSettings, navigateTo: '/' },
    {
       name: 'Manage service',
       icon: FiSettings,
@@ -44,6 +43,16 @@ const LinkItems = [
       name: 'Manage event',
       icon: RiCalendarEventLine,
       navigateTo: 'event/manage',
+   },
+   {
+      name: 'Housekeeper',
+      icon: FiInbox,
+      navigateTo: '/housekeeper/rooms',
+   },
+   {
+      name: 'Checkout',
+      icon: FiInbox,
+      navigateTo: '/checkout',
    },
 ];
 
@@ -99,7 +108,14 @@ function SiderBar({ onClose, ...rest }) {
       currentUserRole === 'admin' &&
          setLinkFilter(LinkItems.filter((item) => item.name === 'Manage User'));
       currentUserRole === 'receptionist' &&
-         setLinkFilter(LinkItems.filter((item) => item.name === 'Room'));
+         setLinkFilter(
+            LinkItems.filter(
+               (item) =>
+                  item.name === 'Room' ||
+                  item.name === 'Housekeeper' ||
+                  item.name === 'Checkout',
+            ),
+         );
       currentUserRole === 'serviceMg' &&
          setLinkFilter(
             LinkItems.filter(
@@ -112,6 +128,9 @@ function SiderBar({ onClose, ...rest }) {
          setLinkFilter(
             LinkItems.filter((item) => item.name === 'Manage event'),
          );
+
+      currentUserRole === 'housekeeper' &&
+         setLinkFilter(LinkItems.filter((item) => item.name === 'Housekeeper'));
    }, [currentUserRole]);
 
    return (
@@ -126,9 +145,6 @@ function SiderBar({ onClose, ...rest }) {
          {...rest}
       >
          <Flex h='20' alignItems='center' mx='6' justifyContent='space-between'>
-            {/* <Text fontSize='2xl' fontFamily='monospace' fontWeight='bold'>
-               Logo
-            </Text> */}
             <Flex px='0' py='5' align='center'>
                <Text fontSize='2xl' ml='2' color='white' fontWeight='semibold'>
                   Hotel CMS

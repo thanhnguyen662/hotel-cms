@@ -8,8 +8,16 @@ import Orders from '../features/Orders';
 import Profile from '../features/Profile';
 import Rooms from '../features/Rooms';
 import Service from '../features/Service';
+
 import Users from '../features/Users';
 import MainLayout from '../layouts/Main';
+
+import Event from '../features/Event';
+import Orders from '../features/Orders';
+//import { useSelector } from 'react-redux';
+import Housekeeper from '../features/Housekeeper';
+import Checkout from '../features/Checkout';
+
 
 function Routers(props) {
    return (
@@ -30,6 +38,8 @@ function Routers(props) {
                <Route path='profile/*' element={<Profile />} />
                <Route path='service/*' element={<Service />} />
                <Route path='event/*' element={<Event />} />
+               <Route path='housekeeper/*' element={<Housekeeper />} />
+               <Route path='checkout/*' element={<Checkout />} />
                <Route path='/' element={<Home />} />
             </Route>
          </Routes>
