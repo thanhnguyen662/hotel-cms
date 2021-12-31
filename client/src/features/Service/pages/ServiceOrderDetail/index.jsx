@@ -34,6 +34,7 @@ function ServiceOrderDetail(props) {
    useEffect(() => {
       const OrderDetail = async () => {
          const getOrderDetail = await orderApi.getOrderItem({ id: orderId });
+         console.log('cc., ', getOrderDetail);
          setServiceCardList(getOrderDetail.serviceHistories);
          console.log(getOrderDetail);
          setStatisticOrder({ roomNumber: getOrderDetail.room.number });
@@ -49,7 +50,7 @@ function ServiceOrderDetail(props) {
    }, [serviceCardList]);
 
    useEffect(() => {
-      const serviceNumbers = serviceCardList?.length;
+      const serviceNumbers = serviceCardList?.length || 0;
       const expired = serviceCardList?.reduce((num, i) => {
          if (moment(i.servedAt).isAfter(moment())) {
             return (num += 1);
@@ -61,8 +62,8 @@ function ServiceOrderDetail(props) {
          return {
             ...pre,
             serviceNumber: serviceNumbers,
-            expired: expired,
-            pending: pending,
+            expired: expired || 0,
+            pending: pending || 0,
          };
       });
    }, [serviceCardList]);

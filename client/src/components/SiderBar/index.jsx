@@ -7,19 +7,18 @@ import {
    Text,
    useColorModeValue,
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
    FiCompass,
    FiHome,
-   FiSettings,
-   FiStar,
-   FiTrendingUp,
    FiInbox,
+   FiSettings,
+   FiTrendingUp,
 } from 'react-icons/fi';
 import { MdRoomService } from 'react-icons/md';
 import { RiCalendarEventLine } from 'react-icons/ri';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const LinkItems = [
    { name: 'Home', icon: FiHome, navigateTo: '/' },

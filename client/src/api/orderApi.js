@@ -6,7 +6,6 @@ const orderApi = {
       return axiosClient.post(url, data);
    },
 
-
    getAllUnpaidOrderItem: (params) => {
       const url = '/orders/orderItem/unpaid/all';
       return axiosClient.get(url, { params });
@@ -14,6 +13,8 @@ const orderApi = {
 
    getOrderItem: (params) => {
       const url = '/orders/orderItem/detail';
+      return axiosClient.get(url, { params });
+   },
 
    getOrders: (params) => {
       const url = '/orders';
