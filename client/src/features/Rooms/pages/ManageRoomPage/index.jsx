@@ -51,7 +51,7 @@ function ManageRoomPage(props) {
          }
       };
       getRoomsInDb();
-   }, [floor, searchData]);
+   }, [floor, searchData, location]);
 
    useEffect(() => {
       const getRoomInDb = async () => {

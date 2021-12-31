@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
    Box,
+   Button,
    Heading,
-   InputGroup,
-   InputLeftElement,
+   HStack,
+   SimpleGrid,
    Stack,
    Text,
-   SimpleGrid,
-   VStack,
-   Button,
    useDisclosure,
+   useToast,
+   VStack,
 } from '@chakra-ui/react';
-import ServiceCard from '../../components/ServiceCard';
-import priceFormat from '../../../../utils/PriceFormat';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import ServiceModal from '../../components/Modal';
+import orderApi from '../../../../api/orderApi';
+import priceFormat from '../../../../utils/PriceFormat';
+import ServiceCard from '../../components/ServiceCard';
+import ServiceModal from '../../components/ServiceModal';
 
 ServiceOrderDetail.propTypes = {};
 
@@ -23,8 +24,91 @@ function ServiceOrderDetail(props) {
    const { orderId } = useParams();
    //UI hook
    const { isOpen, onOpen, onClose } = useDisclosure();
+   const toast = useToast();
    //STATE
    const [modalData, setModalData] = useState({});
+   const [serviceCardList, setServiceCardList] = useState([]);
+   const [serviceCost, setServiceCost] = useState(0);
+   const [statisticOrder, setStatisticOrder] = useState({});
+   //EFFECT
+   useEffect(() => {
+      const OrderDetail = async () => {
+         const getOrderDetail = await orderApi.getOrderItem({ id: orderId });
+         setServiceCardList(getOrderDetail.serviceHistories);
+         console.log(getOrderDetail);
+         setStatisticOrder({ roomNumber: getOrderDetail.room.number });
+      };
+      OrderDetail();
+   }, [orderId]);
+
+   useEffect(() => {
+      const amount = serviceCardList?.reduce((num, i) => {
+         return (num += i.service.price * i.tickets);
+      }, 0);
+      setServiceCost(amount);
+   }, [serviceCardList]);
+
+   useEffect(() => {
+      const serviceNumbers = serviceCardList?.length;
+      const expired = serviceCardList?.reduce((num, i) => {
+         if (moment(i.servedAt).isAfter(moment())) {
+            return (num += 1);
+         }
+         return num;
+      }, 0);
+      const pending = serviceNumbers - expired;
+      setStatisticOrder((pre) => {
+         return {
+            ...pre,
+            serviceNumber: serviceNumbers,
+            expired: expired,
+            pending: pending,
+         };
+      });
+   }, [serviceCardList]);
+
+   //FUNCTION
+   const showToastNotification = (title, description, status) => {
+      toast({
+         title: title,
+         description: description,
+         status: status,
+         duration: 2000,
+         isClosable: true,
+      });
+   };
+   //add new order service
+   const handleOrderServiceProp = (data) => {
+      setServiceCardList([data, ...serviceCardList]);
+      return showToastNotification(
+         'Successful',
+         `Oder service success`,
+         'success',
+      );
+   };
+   //handle edit order service
+   const handleEditOrderServiceProps = (data) => {
+      setServiceCardList((pre) => {
+         const arr = pre.filter((item) => item.id !== data.id);
+         return [data, ...arr];
+      });
+      return showToastNotification(
+         'Successful',
+         `Edit order service success`,
+         'success',
+      );
+   };
+
+   const handleDeleteOrderServiceProp = (data) => {
+      setServiceCardList((pre) => {
+         return pre.filter((item) => item.id !== data.id);
+      });
+      return showToastNotification(
+         'Successful',
+         `Delete order service success`,
+         'success',
+      );
+   };
 
    return (
       <Stack direction={['column', 'row']} spacing='24px' minH='82vh'>
@@ -33,7 +117,8 @@ function ServiceOrderDetail(props) {
                Services list
             </Heading>
             <Text pl='13px' mb='6'>
-               Manage all existing service ordered for user1
+               Manage all existing service ordered for room{' '}
+               {statisticOrder.roomNumber}
             </Text>
             <Box
                css={{
@@ -50,9 +135,19 @@ function ServiceOrderDetail(props) {
                }}
             >
                <SimpleGrid columns={3} spacing={10} px='15px'>
-                  <Box>
-                     <ServiceCard />
-                  </Box>
+                  {serviceCardList?.map((item) => (
+                     <Box key={item.id}>
+                        <ServiceCard
+                           serviceCardData={item}
+                           handleDeleteOrderServiceProp={
+                              handleDeleteOrderServiceProp
+                           }
+                           handleEditOrderServiceProps={
+                              handleEditOrderServiceProps
+                           }
+                        />
+                     </Box>
+                  ))}
                </SimpleGrid>
             </Box>
          </Box>
@@ -67,8 +162,50 @@ function ServiceOrderDetail(props) {
                   p='5'
                >
                   <VStack h='full' w='full' justify='space-between'>
-                     <Box>Info</Box>
-                     <Box w='80%'>
+                     <Box w='full'>
+                        <Heading
+                           fontSize='50px'
+                           color='gray'
+                           w='full'
+                           align='center'
+                        >
+                           Room {statisticOrder.roomNumber}{' '}
+                        </Heading>
+                        <HStack w='full' mt='20px'>
+                           <Text fontWeight='bold' fontSize='17px'>
+                              Services Ordered:
+                           </Text>
+                           <Text fontSize='16px'>
+                              {statisticOrder.serviceNumber}{' '}
+                              {statisticOrder.serviceNumber > 1
+                                 ? 'services'
+                                 : 'service'}
+                           </Text>
+                        </HStack>
+                        <HStack w='full' mt='10px'>
+                           <Text fontWeight='bold' fontSize='17px'>
+                              Expired:
+                           </Text>
+                           <Text fontSize='16px'>
+                              {statisticOrder.expired}{' '}
+                              {statisticOrder.expired > 1
+                                 ? 'services'
+                                 : 'service'}
+                           </Text>
+                        </HStack>
+                        <HStack w='full' mt='10px'>
+                           <Text fontWeight='bold' fontSize='17px'>
+                              Pending:
+                           </Text>
+                           <Text fontSize='16px'>
+                              {statisticOrder.pending}{' '}
+                              {statisticOrder.pending > 1
+                                 ? 'services'
+                                 : 'service'}
+                           </Text>
+                        </HStack>
+                     </Box>
+                     <Box w='full'>
                         <Button
                            colorScheme='green'
                            variant='solid'
@@ -114,7 +251,7 @@ function ServiceOrderDetail(props) {
                      fontWeight='bold'
                      color='gray'
                   >
-                     {priceFormat('10000')}
+                     {priceFormat(serviceCost)}
                   </Text>
                </Box>
             </VStack>
@@ -124,6 +261,7 @@ function ServiceOrderDetail(props) {
             modalData={modalData}
             onClose={onClose}
             orderId={orderId}
+            handleOrderServiceProp={handleOrderServiceProp}
          />
       </Stack>
    );

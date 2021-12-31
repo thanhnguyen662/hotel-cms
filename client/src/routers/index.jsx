@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import React, { useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import Auth from '../features/Auth';
+import Event from '../features/Event';
 import Home from '../features/Home';
-import Users from '../features/Users';
+import Orders from '../features/Orders';
 import Profile from '../features/Profile';
 import Rooms from '../features/Rooms';
-import MainLayout from '../layouts/Main';
 import Service from '../features/Service';
-import Event from '../features/Event';
-import Orders from '../features/Orders';
-import { useSelector } from 'react-redux';
+import Users from '../features/Users';
+import MainLayout from '../layouts/Main';
 
 function Routers(props) {
    return (

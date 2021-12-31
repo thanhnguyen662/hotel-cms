@@ -19,11 +19,13 @@ import * as Yup from 'yup';
 import serviceApi from '../../../../api/serviceApi';
 OrderService.propTypes = {
    orderId: PropTypes.string,
+   handleOrderServiceProp: PropTypes.func,
+   onClose: PropTypes.func,
 };
 
 function OrderService(props) {
    //PROPS
-   const { onClose, orderId } = props;
+   const { onClose, orderId, handleOrderServiceProp } = props;
    const [serviceData, setServiceData] = useState([]);
    //EFFECT
    useEffect(() => {
@@ -45,11 +47,11 @@ function OrderService(props) {
    const handleOrder = async (data) => {
       const dataDestructuring = {
          ...data,
-         start: data.start[0],
+         start: data.start,
          orderId: orderId,
       };
       const OrderRes = await serviceApi.oderService(dataDestructuring);
-      console.log(OrderRes);
+      handleOrderServiceProp(OrderRes);
       onClose();
    };
 

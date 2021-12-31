@@ -20,7 +20,7 @@ import {
    useToast,
 } from '@chakra-ui/react';
 import { ChevronDownIcon, SearchIcon, AddIcon } from '@chakra-ui/icons';
-import ServiceModal from '../../components/Modal';
+import ServiceModal from '../../components/ServiceModal';
 import ManageTable from '../../../../components/ManageTable';
 import serviceApi from '../../../../api/serviceApi';
 import AlertDialogBox from '../../../../components/AlertDialogBox';
