@@ -12,12 +12,9 @@ import Service from '../features/Service';
 import Users from '../features/Users';
 import MainLayout from '../layouts/Main';
 
-import Event from '../features/Event';
-import Orders from '../features/Orders';
 //import { useSelector } from 'react-redux';
 import Housekeeper from '../features/Housekeeper';
 import Checkout from '../features/Checkout';
-
 
 function Routers(props) {
    return (
