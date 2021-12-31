@@ -13,18 +13,32 @@ import {
 import { Formik } from 'formik';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Flatpickr from 'react-flatpickr';
 import * as Yup from 'yup';
 import serviceApi from '../../../../api/serviceApi';
 
 EditOrderService.propTypes = {
    onClose: PropTypes.func,
+   serviceCardData: PropTypes.object,
+   handleEditOrderServiceProps: PropTypes.func,
 };
 
 function EditOrderService(props) {
    //PROPS
-   const { onClose } = props;
+   const { onClose, serviceCardData, handleEditOrderServiceProps } = props;
+   //STATE
+   const [editData, setEditData] = useState({});
+   //EFFECT
+   useEffect(() => {
+      setEditData({
+         id: serviceCardData.id,
+         oderItemId: serviceCardData.oderItemId,
+         serviceId: serviceCardData.serviceId,
+         start: serviceCardData.servedAt,
+         tickets: serviceCardData.tickets,
+      });
+   }, [serviceCardData]);
 
    //YUP
    const validationSchema = Yup.object().shape({
@@ -35,12 +49,14 @@ function EditOrderService(props) {
    //Function
    const handelEditService = async (data) => {
       const dataDestructuring = {
-         test: 'test data',
+         ...editData,
+         ...data,
       };
       const editServiceRes = await serviceApi.editOrderService(
          dataDestructuring,
       );
-      console.log(editServiceRes);
+
+      handleEditOrderServiceProps(editServiceRes);
       onClose();
    };
 
@@ -55,8 +71,8 @@ function EditOrderService(props) {
             onSubmit={(values) => handelEditService(values)}
             validationSchema={validationSchema}
             initialValues={{
-               tickets: 1,
-               start: new Date(),
+               tickets: serviceCardData.tickets,
+               start: serviceCardData.servedAt,
             }}
          >
             {({
@@ -71,7 +87,10 @@ function EditOrderService(props) {
                <>
                   <FormControl>
                      <FormLabel>Service name</FormLabel>
-                     <Input value='Old value' disabled={true}></Input>
+                     <Input
+                        value={serviceCardData.service?.name}
+                        disabled={true}
+                     ></Input>
                   </FormControl>
                   <FormControl
                      id='tickets'

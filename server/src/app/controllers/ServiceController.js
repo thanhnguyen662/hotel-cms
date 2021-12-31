@@ -73,14 +73,25 @@ class ServiceController {
 
   orderService = async (req, res, next) => {
     try {
-      const orderId = parseInt(req.params.orderId);
-      const { name, tickets, start } = req.body;
-      console.log("orderId", orderId);
-      console.log(typeof orderId);
-      console.log(name);
-      console.log(tickets);
-      console.log(start);
-      return res.json({ message: "connect successfully" });
+      const orderItemId = parseInt(req.params.orderId);
+      const serviceId = parseInt(req.body.name);
+      const tickets = parseInt(req.body.tickets);
+      const { start } = req.body;
+      const newServiceHistory = await prisma.serviceHistory.create({
+        data: {
+          oderItemId: orderItemId,
+          serviceId: serviceId,
+          tickets: tickets,
+          servedAt: Array.isArray(start) ? start[0] : start,
+        },
+      });
+      const servicerHistory = await prisma.serviceHistory.findUnique({
+        where: { id: newServiceHistory.id },
+        include: {
+          service: true,
+        },
+      });
+      return res.json(servicerHistory);
     } catch (error) {
       return next(error);
     }
@@ -88,10 +99,9 @@ class ServiceController {
 
   deleteOrderService = async (req, res, next) => {
     try {
-      const oderServiceId = parseInt(req.query.oderServiceId);
-      console.log(oderServiceId);
-      console.log(typeof oderServiceId);
-      return res.json({ message: "Connect successfully" });
+      const orderId = parseInt(req.query.orderId);
+      const deleteOrderItem = await prisma.serviceHistory.delete({ where: { id: orderId } });
+      return res.json(deleteOrderItem);
     } catch (error) {
       return next(error);
     }
@@ -99,9 +109,20 @@ class ServiceController {
 
   editOrderServiceService = async (req, res, next) => {
     try {
-      const { test } = req.body;
-      console.log(test);
-      return res.json({ message: "Connect successfully" });
+      const { id, oderItemId, serviceId, start, tickets } = req.body;
+      const editOrderServiceItem = await prisma.serviceHistory.update({
+        where: { id: id },
+        data: {
+          oderItemId: oderItemId,
+          serviceId: serviceId,
+          servedAt: Array.isArray(start) ? start[0] : start,
+          tickets: parseInt(tickets),
+        },
+        include: {
+          service: true,
+        },
+      });
+      return res.json(editOrderServiceItem);
     } catch (error) {
       return next(error);
     }

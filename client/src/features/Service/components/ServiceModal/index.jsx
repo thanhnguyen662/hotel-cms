@@ -13,18 +13,31 @@ import EditService from '../EditService';
 import OrderService from '../OrderService';
 import EditOrderService from '../EditOrderService';
 
-index.propTypes = {
+ServiceModal.propTypes = {
    isOpen: PropTypes.bool,
    modalData: PropTypes.object,
    onClose: PropTypes.func,
    handleAdd: PropTypes.func,
    handleEdit: PropTypes.func,
    orderId: PropTypes.string,
+   serviceCardData: PropTypes.object,
+   handleOrderServiceProp: PropTypes.func,
+   handleEditOrderServicePropsCAC: PropTypes.func,
 };
 
-function index(props) {
+function ServiceModal(props) {
    //PROPS
-   const { isOpen, modalData, onClose, handleAdd, handleEdit, orderId } = props;
+   const {
+      isOpen,
+      modalData,
+      onClose,
+      handleAdd,
+      handleEdit,
+      orderId,
+      serviceCardData,
+      handleOrderServiceProp,
+      handleEditOrderServiceProps,
+   } = props;
 
    return (
       <>
@@ -49,12 +62,17 @@ function index(props) {
                         onClose={onClose}
                         modalData={modalData}
                         orderId={orderId}
+                        handleOrderServiceProp={handleOrderServiceProp}
                      />
                   )}
                   {modalData.modalType === 'EditOrder' && (
                      <EditOrderService
                         onClose={onClose}
                         modalData={modalData}
+                        serviceCardData={serviceCardData}
+                        handleEditOrderServiceProps={
+                           handleEditOrderServiceProps
+                        }
                      />
                   )}
                </ModalBody>
@@ -64,4 +82,4 @@ function index(props) {
    );
 }
 
-export default index;
+export default ServiceModal;
