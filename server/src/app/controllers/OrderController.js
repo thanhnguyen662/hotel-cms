@@ -112,6 +112,7 @@ class OrderController {
          const orderDuration = parseInt(req.body.orderDuration);
          const customerOrderRoom = req.body.customerOrderRoom;
          const receptionistId = req.body.receptionistId;
+         const rangeOrderDate = req.body.rangeOrderDate;
          // console.log('customerOrderRoom: ', customerOrderRoom);
          const prepareRoomData = roomData.reduce((array, item) => {
             array.push({
@@ -125,6 +126,8 @@ class OrderController {
             data: {
                totalPrice: parseFloat(totalOrderPrice),
                receptionistId: receptionistId,
+               startDate: new Date(rangeOrderDate[0]),
+               endDate: new Date(rangeOrderDate[1]),
                orderItems: {
                   createMany: {
                      data: prepareRoomData,
@@ -182,6 +185,79 @@ class OrderController {
          const result = await Promise.all(createCustomerOrderItemsPromise);
 
          return res.json({ ...result, message: 'create_order_success' });
+      } catch (error) {
+         return next(error);
+      }
+   };
+
+   getOrders = async (req, res, next) => {
+      try {
+         const isType = () => {
+            if (req.query.orderType === 'all') return undefined;
+            if (req.query.orderType === 'paid') return true;
+            if (req.query.orderType === 'unpaid') return false;
+         };
+         const response = await prisma.order.findMany({
+            where: {
+               isComplete: isType(),
+               orderItems: {
+                  some: {
+                     room: {
+                        number: Number(req.query.roomNumber) || undefined,
+                     },
+                  },
+               },
+            },
+            include: {
+               user: true,
+               orderItems: {
+                  include: {
+                     room: {
+                        include: {
+                           roomDetail: true,
+                        },
+                     },
+                     _count: {
+                        select: {
+                           customerOrderItemRooms: true,
+                        },
+                     },
+                  },
+               },
+            },
+         });
+
+         return res.status(200).json(response);
+      } catch (error) {
+         return next(error);
+      }
+   };
+
+   getOrderById = async (req, res, next) => {
+      try {
+         const response = await prisma.order.findUnique({
+            where: {
+               id: Number(req.query.orderId),
+            },
+            include: {
+               orderItems: {
+                  include: {
+                     customerOrderItemRooms: {
+                        include: {
+                           customer: true,
+                        },
+                     },
+                     room: {
+                        include: {
+                           roomDetail: true,
+                           statusOfRooms: true,
+                        },
+                     },
+                  },
+               },
+            },
+         });
+         res.status(200).json(response);
       } catch (error) {
          return next(error);
       }

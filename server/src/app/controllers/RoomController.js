@@ -104,6 +104,81 @@ class RoomController {
          return next(error);
       }
    };
+
+   housekeeperManageRoom = async (req, res, next) => {
+      try {
+         const response = await prisma.room.findMany({
+            where: {
+               AND: [
+                  {
+                     number: Number(req.query.roomNumber) || undefined,
+                  },
+                  {
+                     statusOfRooms: {
+                        some: {
+                           roomStatus: {
+                              code: req.query.roomStatus || undefined,
+                           },
+                        },
+                     },
+                  },
+               ],
+            },
+            include: {
+               statusOfRooms: {
+                  include: {
+                     roomStatus: true,
+                  },
+               },
+            },
+            orderBy: {
+               updateStatusdAt: 'asc',
+            },
+         });
+
+         const newResponse = response?.reduce((array, item) => {
+            const select = item.statusOfRooms.filter(
+               (status) => status.roleId === 3
+            );
+            item.statusOfRooms = [...select];
+            array.push(item);
+            return array;
+         }, []);
+
+         return res.status(200).json(newResponse || response);
+      } catch (error) {
+         return next(error);
+      }
+   };
+
+   housekeeperUpdateStatusRoom = async (req, res, next) => {
+      try {
+         const findStatusCodeById = await prisma.roomStatus.findMany({
+            where: {
+               code: req.body.statusCode,
+            },
+         });
+
+         const response = await prisma.statusOfRoom.update({
+            where: {
+               id: Number(req.body.statusOfRoomId),
+            },
+            data: {
+               roomStatusId: Number(findStatusCodeById[0].id),
+            },
+            include: {
+               room: true,
+               roomStatus: true,
+            },
+         });
+
+         return res
+            .status(200)
+            .json({ ...response, message: 'updated_roomStatus_success' });
+      } catch (error) {
+         return next(error);
+      }
+   };
 }
 
 module.exports = new RoomController();
