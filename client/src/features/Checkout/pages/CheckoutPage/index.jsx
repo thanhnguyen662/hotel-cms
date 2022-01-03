@@ -9,6 +9,7 @@ import {
    Text,
    VStack,
 } from '@chakra-ui/react';
+import moment from 'moment';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import orderApi from '../../../../api/orderApi';
@@ -42,8 +43,18 @@ function CheckoutPage(props) {
    const columns = useMemo(
       () => [
          {
-            Header: 'id',
-            accessor: 'id',
+            Header: 'Date',
+            Cell: (record) => {
+               const value = record.row.original;
+               return (
+                  <VStack w='full' alignItems='start'>
+                     <Text>
+                        {moment(value.startDate).format('DD-MM-YYYY')} to
+                     </Text>
+                     <Text>{moment(value.endDate).format('DD-MM-YYYY')}</Text>
+                  </VStack>
+               );
+            },
          },
          {
             Header: 'Rooms',
@@ -60,7 +71,9 @@ function CheckoutPage(props) {
             Header: 'Room Price',
             accessor: 'totalPrice',
             Cell: (record) => {
-               return <Text>{priceFormat(record.value)}</Text>;
+               return (
+                  <Text fontWeight='bold'>{priceFormat(record.value)}</Text>
+               );
             },
          },
          {
@@ -69,9 +82,29 @@ function CheckoutPage(props) {
             Cell: (record) => {
                return (
                   <HStack spacing='10px'>
-                     <Avatar name={record.value} />
+                     <Avatar name={record.value} size='md' />
                      <Text>{record.value}</Text>
                   </HStack>
+               );
+            },
+         },
+         {
+            Header: 'Expired',
+            Cell: (record) => {
+               const value = record.row.original;
+               const isExpired = moment(value.endDate).isBefore(moment());
+               return (
+                  <Box>
+                     {isExpired ? (
+                        <Tag colorScheme={'green'} size='lg'>
+                           YES
+                        </Tag>
+                     ) : (
+                        <Tag colorScheme={'red'} size='lg'>
+                           NO
+                        </Tag>
+                     )}
+                  </Box>
                );
             },
          },

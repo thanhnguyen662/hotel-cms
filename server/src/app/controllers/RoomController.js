@@ -29,6 +29,9 @@ class RoomController {
                   },
                },
             },
+            orderBy: {
+               number: 'asc',
+            },
          });
 
          return res.status(200).json(response);
@@ -60,7 +63,7 @@ class RoomController {
    };
 
    createRoom = async (req, res, next) => {
-      const { roomNumber, floor, roomType, bedroom, price } = req.body;
+      const { roomNumber, floor, roomType, bedroom, price, name } = req.body;
       const imageURL = `${faker.image.business()}?random=${Math.round(
          Math.random() * 1000
       )}`;
@@ -70,7 +73,7 @@ class RoomController {
             data: {
                number: Number(roomNumber),
                floor: Number(floor),
-
+               name: name,
                roomDetail: {
                   create: {
                      bedroom: bedroom,

@@ -47,6 +47,7 @@ function RoomCreateModal(props) {
 const CreateModalForm = () => {
    const navigate = useNavigate();
    const initialValues = {
+      name: '',
       roomNumber: '',
       floor: '',
       roomType: 'single',
@@ -55,6 +56,7 @@ const CreateModalForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
+      name: Yup.string().required('Name is required!'),
       roomNumber: Yup.number()
          .typeError('Must be number')
          .required('Room Number is required!'),
@@ -108,6 +110,14 @@ const CreateModalForm = () => {
                      <FormLabel>Room Number</FormLabel>
                      <Input value={values.roomNumber} onChange={handleChange} />
                      <FormErrorMessage>{errors.roomNumber}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl
+                     id='name'
+                     isInvalid={errors.name && touched.name}
+                  >
+                     <FormLabel>Room Name</FormLabel>
+                     <Input value={values.name} onChange={handleChange} />
+                     <FormErrorMessage>{errors.name}</FormErrorMessage>
                   </FormControl>
                   <FormControl
                      id='floor'

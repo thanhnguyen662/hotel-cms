@@ -61,7 +61,7 @@ function OrderDetailModal(props) {
          }
       };
       getOrderInDb();
-   }, [orderId]);
+   }, [orderId, location]);
 
    const onClickCheckoutButton = async () => {
       try {
@@ -211,7 +211,7 @@ const ModalMainContent = (props) => {
                   mode: 'range',
                   defaultDate: [
                      moment(orderData.startDate).toDate(),
-                     moment(orderData.endDate).add(1, 'hours').toDate(),
+                     moment(orderData.endDate).toDate(),
                   ],
                }}
             />
